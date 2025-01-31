@@ -75,7 +75,7 @@
 				<version>3.4.2</version>
 				<configuration>
 					<to>
-						<image>marox/${project.artifactId}:s1</image>
+						<image>marox/${project.artifactId}:t1</image>
 					</to>
 				</configuration>
 			</plugin>
@@ -85,7 +85,7 @@
 				<version>3.4.2</version>
 				<configuration>
 					<to>
-						<image>marox/${project.artifactId}:s1</image>
+						<image>marox/${project.artifactId}:t1</image>
 					</to>
 				</configuration>
 			</plugin>

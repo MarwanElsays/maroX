@@ -1,5 +1,6 @@
 package com.marox.comments.controller;
 
+import com.marox.comments.dto.AccountsContactInfoDto;
 import com.marox.comments.dto.CommentDto;
 import com.marox.comments.service.CommentService;
 import jakarta.validation.Valid;
@@ -18,6 +19,9 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private AccountsContactInfoDto accountsContactInfoDto;
 
     @PostMapping("/createComment")
     public ResponseEntity<Long> createComment(@Valid @RequestBody CommentDto comment) {
@@ -53,5 +57,12 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/getContactInfo")
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
     }
 }

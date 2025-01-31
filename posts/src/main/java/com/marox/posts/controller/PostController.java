@@ -1,6 +1,7 @@
 package com.marox.posts.controller;
 
 import com.marox.posts.dto.PostDto;
+import com.marox.posts.dto.AccountsContactInfoDto;
 import com.marox.posts.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    @Autowired
+    private AccountsContactInfoDto accountsContactInfoDto;
 
     @PostMapping("/createPost")
     public ResponseEntity<Long> createPost(@Valid @RequestBody PostDto postDto) {
@@ -53,5 +56,12 @@ public class PostController {
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/getContactInfo")
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
     }
 }
