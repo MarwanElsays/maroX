@@ -1,6 +1,10 @@
 server:
   port: 9000
 spring:
+  application:
+    name: "posts"
+  profiles:
+    active: "prod"
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -14,10 +18,21 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-#  cloud:
-#    config:
-#      enabled: false
-#
-#eureka:
-#  client:
-#    enabled: false
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+
+eureka:
+  client:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

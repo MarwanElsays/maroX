@@ -1,5 +1,6 @@
 package com.marox.users.controller;
 
+import com.marox.users.dto.AccountsContactInfoDto;
 import com.marox.users.dto.UserRequestDto;
 import com.marox.users.dto.UserResponseDto;
 import com.marox.users.service.UserService;
@@ -20,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AccountsContactInfoDto accountsContactInfoDto;
 
     @PostMapping("/createUser")
     public ResponseEntity<Long> createUser(@Valid @RequestBody UserRequestDto user) {
@@ -62,5 +66,12 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/getContactInfo")
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
     }
 }
