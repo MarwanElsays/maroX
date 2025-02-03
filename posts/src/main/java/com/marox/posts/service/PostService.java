@@ -70,12 +70,13 @@ public class PostService {
 
     // Helper method to convert Post entity to PostDto
     private PostDto mapToPostDto(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.setPostId(post.getPostId());
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
-        postDto.setAuthorId(post.getAuthorId());
-        postDto.setStatus(post.getStatus());
-        return postDto;
+        return PostDto.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .authorId(post.getAuthorId())
+                .status(post.getStatus())
+                .build();
     }
+
 }

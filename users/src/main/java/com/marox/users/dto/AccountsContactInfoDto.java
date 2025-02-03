@@ -1,5 +1,7 @@
 package com.marox.users.dto;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "users")
-@Getter
-@Setter
+@Data
+@Builder
 public class AccountsContactInfoDto {
 
     private String message;

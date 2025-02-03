@@ -1,6 +1,7 @@
 package com.marox.users.controller;
 
 import com.marox.users.dto.AccountsContactInfoDto;
+import com.marox.users.dto.UserProfileDto;
 import com.marox.users.dto.UserRequestDto;
 import com.marox.users.dto.UserResponseDto;
 import com.marox.users.service.UserService;
@@ -21,13 +22,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private AccountsContactInfoDto accountsContactInfoDto;
 
     @PostMapping("/createUser")
-    public ResponseEntity<Long> createUser(@Valid @RequestBody UserRequestDto user) {
-        Long createdUserId = userService.createUser(user);
+    public ResponseEntity<Long> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+        Long createdUserId = userService.createUser(userRequestDto);
         return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
     }
 
@@ -39,26 +39,26 @@ public class UserController {
 
     @GetMapping("getUser/{userId}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
-        UserResponseDto user = userService.getUserById(userId);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserResponseDto userResponseDto = userService.getUserById(userId);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("getUserByEmail/{userId}")
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable @Email(message = "Invalid email format")
                                                               String Email) {
-        UserResponseDto user = userService.getUserByEmail(Email);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserResponseDto userResponseDto = userService.getUserByEmail(Email);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("getUserByUserName/{userId}")
     public ResponseEntity<UserResponseDto> getUserByUserName(@PathVariable String userName) {
-        UserResponseDto user = userService.getUserByUserName(userName);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserResponseDto userResponseDto = userService.getUserByUserName(userName);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @PutMapping("updateUser/{userId}")
-    public ResponseEntity<UserRequestDto> updateUser(@Valid @RequestBody UserRequestDto user) {
-        userService.updateUser(user);
+    public ResponseEntity<UserRequestDto> updateUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+        userService.updateUser(userRequestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -66,6 +66,12 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("getUserProfile/{userId}")
+    public ResponseEntity<UserProfileDto> getUserProfile(@PathVariable Long userId) {
+        UserProfileDto userProfileDto = userService.getUserProfile(userId);
+        return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
     }
 
     @GetMapping("/getContactInfo")

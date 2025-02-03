@@ -1,13 +1,18 @@
 package com.marox.users.service;
 
+import com.marox.users.dto.PostDto;
+import com.marox.users.dto.UserProfileDto;
 import com.marox.users.dto.UserResponseDto;
 import com.marox.users.entity.User;
 import com.marox.users.repository.UserRepository;
 import com.marox.users.dto.UserRequestDto;
+import com.marox.users.service.client.PostsFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,21 +20,24 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PostsFeignClient postsFeignClient;
 
     public Long createUser(UserRequestDto userRequestDto) {
-        // Convert DTO to entity
-        User user = new User();
-        user.setUsername(userRequestDto.getUsername());
-        user.setEmail(userRequestDto.getEmail());
-        user.setPassword(userRequestDto.getPassword());
-        user.setFirstName(userRequestDto.getFirstName());
-        user.setLastName(userRequestDto.getLastName());
-        user.setRole(userRequestDto.getRole());
+        // Convert DTO to entity using builder pattern
+        User user = User.builder()
+                .username(userRequestDto.getUsername())
+                .email(userRequestDto.getEmail())
+                .password(userRequestDto.getPassword())
+                .firstName(userRequestDto.getFirstName())
+                .lastName(userRequestDto.getLastName())
+                .role(userRequestDto.getRole())
+                .build();
 
         // Save the user to the database
         User savedUser = userRepository.save(user);
 
-        // Convert entity back to DTO
+        // Return the user ID
         return savedUser.getUserId();
     }
 
@@ -71,23 +79,35 @@ public class UserService {
         user.setRole(userRequestDto.getRole());
 
         // Save the updated user
-        User updatedUser = userRepository.save(user);
-
-        // Convert entity back to DTO
-        // return mapToUserResponseDto(updatedUser);
+        userRepository.save(user);
     }
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
+    public UserProfileDto getUserProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<PostDto> posts = Optional.ofNullable(postsFeignClient.getPostsByUserId(userId).getBody())
+                .orElse(Collections.emptyList());
+
+        return UserProfileDto.builder()
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .posts(posts)
+                .build();
+    }
+
     private UserResponseDto mapToUserResponseDto(User user) {
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setUsername(user.getUsername());
-        userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setFirstName(user.getFirstName());
-        userResponseDto.setLastName(user.getLastName());
-        userResponseDto.setRole(user.getRole());
-        return userResponseDto;
+        return UserResponseDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .role(user.getRole())
+                .build();
     }
 }

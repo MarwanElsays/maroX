@@ -1,5 +1,6 @@
 package com.marox.posts.entity;
 
+import com.marox.posts.enums.PostStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,9 +35,5 @@ public class Post {
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    Status status;
-
-    public enum Status {
-        DRAFT, PUBLISHED, ARCHIVED
-    }
+    private PostStatus status;
 }

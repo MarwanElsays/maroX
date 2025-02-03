@@ -1,8 +1,15 @@
 package com.marox.comments.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentDto {
 
     @NotNull(message = "Post ID cannot be null")

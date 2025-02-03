@@ -1,6 +1,6 @@
 services:
   rabbit:
-    image: rabbitmq:3.13-management
+    image: rabbitmq:4.0-management
     hostname: rabbitmq
     ports:
       - "5672:5672"
@@ -33,6 +33,26 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  eurekaserver:
+    image: "marox/eurekaserver:t1"
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
   users:
     image: "marox/users:t1"
     container_name: users-ms
@@ -41,11 +61,13 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "users"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
   comments:
     image: "marox/comments:t1"
@@ -55,11 +77,13 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "comments"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
   posts:
     image: "marox/posts:t1"
@@ -69,11 +93,13 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "posts"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
 networks:
   marox:

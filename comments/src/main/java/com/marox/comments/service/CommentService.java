@@ -72,11 +72,12 @@ public class CommentService {
     }
 
     private CommentDto mapToCommentDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setPostId(comment.getPostId());
-        commentDto.setUserId(comment.getUserId());
-        commentDto.setContent(comment.getContent());
-        commentDto.setParentCommentId(comment.getParentCommentId());
-        return commentDto;
+        return CommentDto.builder()
+                .postId(comment.getPostId())
+                .userId(comment.getUserId())
+                .content(comment.getContent())
+                .parentCommentId(comment.getParentCommentId())
+                .build();
     }
+
 }

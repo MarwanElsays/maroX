@@ -2,8 +2,15 @@ package com.marox.users.dto;
 
 import com.marox.users.entity.User;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserResponseDto {
 
     @NotEmpty(message = "Username cannot be null or empty")

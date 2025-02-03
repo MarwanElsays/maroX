@@ -1,7 +1,6 @@
-package com.marox.posts.dto;
+package com.marox.users.dto;
 
-import com.marox.posts.entity.Post;
-import com.marox.posts.enums.PostStatus;
+import com.marox.users.enums.PostStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
