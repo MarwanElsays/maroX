@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient("posts")
+
+@FeignClient(name="posts", fallback = PostsFallback.class)
 public interface PostsFeignClient {
 
     @GetMapping(value = "/api/getPostsByUserId/{userId}")
-    public ResponseEntity<List<PostDto>> getPostsByUserId(@PathVariable Long userId);
+    ResponseEntity<List<PostDto>> getPostsByUserId(@PathVariable Long userId);
 
 }

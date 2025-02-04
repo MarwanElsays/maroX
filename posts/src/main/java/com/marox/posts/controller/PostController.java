@@ -3,7 +3,10 @@ package com.marox.posts.controller;
 import com.marox.posts.dto.PostDto;
 import com.marox.posts.dto.AccountsContactInfoDto;
 import com.marox.posts.service.PostService;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,8 @@ public class PostController {
     private PostService postService;
     @Autowired
     private AccountsContactInfoDto accountsContactInfoDto;
+
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
 
     @PostMapping("/createPost")
     public ResponseEntity<Long> createPost(@Valid @RequestBody PostDto postDto) {
@@ -40,10 +45,16 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
+    @Retry(name= "getPostsByUserId", fallbackMethod = "getPostsByUserIdFallback")
     @GetMapping("getPostsByUserId/{userId}")
     public ResponseEntity<List<PostDto>> getPostsByUserId(@PathVariable Long userId) {
+        logger.debug("getPostsByUserId called");
         List<PostDto> posts = postService.getPostsByUserId(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+    public ResponseEntity<List<PostDto>> getPostsByUserIdFallback(@PathVariable Long userId, Throwable throwable) {
+        logger.debug("getPostsByUserId-Fallback called due to: {}", throwable.getMessage());
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PutMapping("updatePost/{postId}")

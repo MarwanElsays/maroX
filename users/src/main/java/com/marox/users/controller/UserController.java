@@ -5,6 +5,8 @@ import com.marox.users.dto.UserProfileDto;
 import com.marox.users.dto.UserRequestDto;
 import com.marox.users.dto.UserResponseDto;
 import com.marox.users.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/api")
@@ -74,8 +77,17 @@ public class UserController {
         return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
     }
 
+    @Retry(name= "getContactInfo", fallbackMethod = "getContactInfoFallback")
     @GetMapping("/getContactInfo")
     public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        System.out.println("ana done");
+        //throw new TimeoutException();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
+    }
+    public ResponseEntity<AccountsContactInfoDto> getContactInfoFallback(Throwable throwable) {
+        accountsContactInfoDto.setMessage("Service Unavailable");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(accountsContactInfoDto);
