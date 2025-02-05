@@ -101,6 +101,35 @@ public class UserService {
                 .build();
     }
 
+    public List<UserResponseDto> getFollowers(Long userId) {
+        List<User> followers = userRepository.findFollowers(userId);
+        return followers.stream()
+                .map(this::mapToUserResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserResponseDto> getFollowing(Long userId) {
+        List<User> following = userRepository.findFollowing(userId);
+        return following.stream()
+                .map(this::mapToUserResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public boolean followUser(Long userId, Long followedUserId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<User> followedUser = userRepository.findById(followedUserId);
+
+        if (user.isEmpty() || followedUser.isEmpty() || user.get().getFollowing().contains(followedUser.get()))
+            return false;
+
+        user.get().getFollowing().add(followedUser.get()); // Add followed user to the following list of the user
+        followedUser.get().getFollowers().add(user.get()); // Add the user to the followers list of the followed user
+        userRepository.save(user.get());
+        userRepository.save(followedUser.get());
+
+        return true;
+    }
+
     private UserResponseDto mapToUserResponseDto(User user) {
         return UserResponseDto.builder()
                 .username(user.getUsername())

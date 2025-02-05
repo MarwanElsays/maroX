@@ -77,6 +77,28 @@ public class UserController {
         return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
     }
 
+    @GetMapping("/getFollowers/{userId}")
+    public ResponseEntity<List<UserResponseDto>> getFollowers(@PathVariable Long userId) {
+        List<UserResponseDto> followers = userService.getFollowers(userId);
+        return new ResponseEntity<>(followers, HttpStatus.OK);
+    }
+
+    @GetMapping("/getFollowing/{userId}")
+    public ResponseEntity<List<UserResponseDto>> getFollowing(@PathVariable Long userId) {
+        List<UserResponseDto> following = userService.getFollowing(userId);
+        return new ResponseEntity<>(following, HttpStatus.OK);
+    }
+
+    @PostMapping("/followUser")
+    public ResponseEntity<String> followUser(@RequestParam Long userId, @RequestParam Long followedUserId) {
+        boolean isFollowed = userService.followUser(userId, followedUserId);
+        if (isFollowed) {
+            return new ResponseEntity<>("User followed successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User already followed or invalid user", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Retry(name= "getContactInfo", fallbackMethod = "getContactInfoFallback")
     @GetMapping("/getContactInfo")
     public ResponseEntity<AccountsContactInfoDto> getContactInfo() {

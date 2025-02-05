@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -43,4 +44,15 @@ public class User {
     public enum Role {
         USER, ADMIN
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "followers",
+            joinColumns = @JoinColumn(name = "followed_id"), // The user being followed
+            inverseJoinColumns = @JoinColumn(name = "follower_id") // The user who follows
+    )
+    private List<User> followers;
+
+    @ManyToMany(mappedBy = "followers")
+    private List<User> following;
 }
