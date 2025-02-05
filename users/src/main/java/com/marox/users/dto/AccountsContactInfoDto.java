@@ -1,5 +1,6 @@
 package com.marox.users.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -10,7 +11,9 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import java.util.List;
 import java.util.Map;
 
+@JsonIgnoreProperties({"beanFactory", "beanExpressionResolver"})
 @ConfigurationProperties(prefix = "users")
+@RefreshScope
 @Data
 @Builder
 public class AccountsContactInfoDto {
