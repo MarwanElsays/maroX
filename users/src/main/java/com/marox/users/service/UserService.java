@@ -1,11 +1,8 @@
 package com.marox.users.service;
 
-import com.marox.users.dto.PostDto;
-import com.marox.users.dto.UserProfileDto;
-import com.marox.users.dto.UserResponseDto;
+import com.marox.users.dto.*;
 import com.marox.users.entity.User;
 import com.marox.users.repository.UserRepository;
-import com.marox.users.dto.UserRequestDto;
 import com.marox.users.service.client.PostsFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,6 +125,18 @@ public class UserService {
         userRepository.save(followedUser.get());
 
         return true;
+    }
+
+    public List<UserLikesDto> getLikesUsersInfo(List<Long> ids) {
+        List<User> users = userRepository.findAllById(ids);
+        return users.stream()
+                .map(user -> UserLikesDto.builder()
+                        .userId(user.getUserId())
+                        .username(user.getUsername())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private UserResponseDto mapToUserResponseDto(User user) {

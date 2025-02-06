@@ -1,9 +1,6 @@
 package com.marox.users.controller;
 
-import com.marox.users.dto.AccountsContactInfoDto;
-import com.marox.users.dto.UserProfileDto;
-import com.marox.users.dto.UserRequestDto;
-import com.marox.users.dto.UserResponseDto;
+import com.marox.users.dto.*;
 import com.marox.users.service.UserService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -97,6 +94,12 @@ public class UserController {
         } else {
             return new ResponseEntity<>("User already followed or invalid user", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("getLikesUsersInfo")
+    public ResponseEntity<List<UserLikesDto>> getLikesUsersInfo(@RequestBody List<Long> ids) {
+        List<UserLikesDto> usersLikesInfo = userService.getLikesUsersInfo(ids);
+        return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);
     }
 
     @Retry(name= "getContactInfo", fallbackMethod = "getContactInfoFallback")

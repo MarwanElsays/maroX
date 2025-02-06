@@ -26,5 +26,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select u.* from users as u join followers as f on u.user_id = f.followed_id where f.follower_id = :userId"
             , nativeQuery = true)
     List<User> findFollowing(@Param("userId") Long userId);
-
 }

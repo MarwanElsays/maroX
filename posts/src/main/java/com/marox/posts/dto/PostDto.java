@@ -29,4 +29,6 @@ public class PostDto {
 
     @NotNull(message = "Status cannot be null")
     private PostStatus status;
+
+    private long LikesCount;
 }

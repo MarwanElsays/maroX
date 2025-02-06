@@ -2,6 +2,7 @@ package com.marox.posts.controller;
 
 import com.marox.posts.dto.PostDto;
 import com.marox.posts.dto.AccountsContactInfoDto;
+import com.marox.posts.dto.UserLikesDto;
 import com.marox.posts.service.PostService;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
@@ -56,7 +57,6 @@ public class PostController {
         logger.debug("getPostsByUserId-Fallback called due to: {}", throwable.getMessage());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
-
     @PutMapping("updatePost/{postId}")
     public ResponseEntity<Void> updatePost(@Valid @RequestBody PostDto postDto) {
         postService.updatePost(postDto);
@@ -67,6 +67,18 @@ public class PostController {
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/likePost")
+    public ResponseEntity<Void> likePost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId) {
+        postService.addLikeToPost(userId, postId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getPostLikesWithUsersInfo/{postId}")
+    public ResponseEntity<List<UserLikesDto>> getPostLikesWithUsersInfo(@PathVariable Long postId) {
+        List<UserLikesDto> usersLikesInfo= postService.getPostLikesWithUsersInfo(postId);
+        return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);
     }
 
     @GetMapping("/getContactInfo")
