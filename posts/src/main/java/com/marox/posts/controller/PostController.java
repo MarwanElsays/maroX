@@ -2,7 +2,7 @@ package com.marox.posts.controller;
 
 import com.marox.posts.dto.PostDto;
 import com.marox.posts.dto.AccountsContactInfoDto;
-import com.marox.posts.dto.UserLikesDto;
+import com.marox.posts.dto.UserInteractionDto;
 import com.marox.posts.service.PostService;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
@@ -71,13 +71,19 @@ public class PostController {
 
     @PostMapping("/likePost")
     public ResponseEntity<Void> likePost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId) {
-        postService.addLikeToPost(userId, postId);
+        postService.likePost(userId, postId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/unlikePost")
+    public ResponseEntity<Void> unlikePost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId) {
+        postService.unlikePost(userId, postId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/getPostLikesWithUsersInfo/{postId}")
-    public ResponseEntity<List<UserLikesDto>> getPostLikesWithUsersInfo(@PathVariable Long postId) {
-        List<UserLikesDto> usersLikesInfo= postService.getPostLikesWithUsersInfo(postId);
+    public ResponseEntity<List<UserInteractionDto>> getPostLikesWithUsersInfo(@PathVariable Long postId) {
+        List<UserInteractionDto> usersLikesInfo= postService.getPostLikesWithUsersInfo(postId);
         return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);
     }
 

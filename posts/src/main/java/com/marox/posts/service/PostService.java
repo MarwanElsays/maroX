@@ -1,6 +1,6 @@
 package com.marox.posts.service;
 
-import com.marox.posts.dto.UserLikesDto;
+import com.marox.posts.dto.UserInteractionDto;
 import com.marox.posts.entity.Like;
 import com.marox.posts.entity.LikeId;
 import com.marox.posts.entity.Post;
@@ -78,7 +78,7 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    public void addLikeToPost(Long userId, Long postId) {
+    public void likePost(Long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         // Create the composite key for the Like
@@ -94,7 +94,18 @@ public class PostService {
         likeRepository.save(like);
     }
 
-    public List<UserLikesDto> getPostLikesWithUsersInfo(Long postId) {
+    public void unlikePost(Long userId, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        // Create the composite key for the Like
+        LikeId likeId = LikeId.builder()
+                .userId(userId)
+                .post(post)
+                .build();
+        likeRepository.deleteById(likeId);
+    }
+
+    public List<UserInteractionDto> getPostLikesWithUsersInfo(Long postId) {
         List<Long> userIds = likeRepository.findUserIdsByPostId(postId);
         System.out.println(userIds);
         return Optional.ofNullable(usersFeignClient.getLikesUsersInfo(userIds).getBody())

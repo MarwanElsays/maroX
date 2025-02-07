@@ -127,10 +127,25 @@ public class UserService {
         return true;
     }
 
-    public List<UserLikesDto> getLikesUsersInfo(List<Long> ids) {
+    public boolean unfollowUser(Long userId, Long followedUserId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<User> followedUser = userRepository.findById(followedUserId);
+
+        if (user.isEmpty() || followedUser.isEmpty() || !user.get().getFollowing().contains(followedUser.get()))
+            return false;
+
+        user.get().getFollowing().remove(followedUser.get()); // Remove followed user from the following list of the user
+        followedUser.get().getFollowers().remove(user.get()); // Remove the user from the followers list of the followed user
+        userRepository.save(user.get());
+        userRepository.save(followedUser.get());
+
+        return true;
+    }
+
+    public List<UserInteractionDto> getLikesUsersInfo(List<Long> ids) {
         List<User> users = userRepository.findAllById(ids);
         return users.stream()
-                .map(user -> UserLikesDto.builder()
+                .map(user -> UserInteractionDto.builder()
                         .userId(user.getUserId())
                         .username(user.getUsername())
                         .firstName(user.getFirstName())

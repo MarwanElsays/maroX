@@ -2,7 +2,6 @@ package com.marox.users.controller;
 
 import com.marox.users.dto.*;
 import com.marox.users.service.UserService;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -13,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/api")
@@ -96,9 +94,18 @@ public class UserController {
         }
     }
 
-    @PostMapping("getLikesUsersInfo")
-    public ResponseEntity<List<UserLikesDto>> getLikesUsersInfo(@RequestBody List<Long> ids) {
-        List<UserLikesDto> usersLikesInfo = userService.getLikesUsersInfo(ids);
+    @PostMapping("/unfollowUser")
+    public ResponseEntity<String> unfollowUser(@RequestParam Long userId, @RequestParam Long unfollowedUserId) {
+        boolean isUnfollowed = userService.unfollowUser(userId, unfollowedUserId);
+        if (isUnfollowed) {
+            return new ResponseEntity<>("User unfollowed successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not followed or invalid user", HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/getLikesUsersInfo")
+    public ResponseEntity<List<UserInteractionDto>> getLikesUsersInfo(@RequestBody List<Long> ids) {
+        List<UserInteractionDto> usersLikesInfo = userService.getLikesUsersInfo(ids);
         return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);
     }
 
