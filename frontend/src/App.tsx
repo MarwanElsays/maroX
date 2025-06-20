@@ -1,7 +1,11 @@
 import './App.css'
 import '@mantine/core/styles.css';
-import { MantineProvider, Container } from '@mantine/core';
+import { MantineProvider, Container} from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Timeline from './pages/TimeLine';
+import { NavBar } from './components/NavBar/NavBar';
+import { Post } from './pages/Post';
+import FollowBar from './components/FollowBar/FollowBar';
 
 export default function App() {
 
@@ -9,11 +13,13 @@ export default function App() {
     <MantineProvider>
       <Router>
         <Container>
+          <NavBar/>
           <Routes>
             <Route path="/" element={<> To be added </>} />
-            <Route path="/about" element={<> To be added </>} />
-            <Route path="*" element={<> To be added </>} />
+            <Route path="/post" element={<Post/>} />
+            <Route path="/timeline" element={<Timeline/>} />
           </Routes>
+          <FollowBar/>
         </Container>
       </Router>
     </MantineProvider>
