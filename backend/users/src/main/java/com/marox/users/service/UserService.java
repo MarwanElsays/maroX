@@ -142,7 +142,7 @@ public class UserService {
         return true;
     }
 
-    public List<UserInteractionDto> getLikesUsersInfo(List<Long> ids) {
+    public List<UserInteractionDto> getUsersInteractedWithPost(List<Long> ids) {
         List<User> users = userRepository.findAllById(ids);
         return users.stream()
                 .map(user -> UserInteractionDto.builder()

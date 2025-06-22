@@ -103,9 +103,10 @@ public class UserController {
             return new ResponseEntity<>("User not followed or invalid user", HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/getLikesUsersInfo")
-    public ResponseEntity<List<UserInteractionDto>> getLikesUsersInfo(@RequestBody List<Long> ids) {
-        List<UserInteractionDto> usersLikesInfo = userService.getLikesUsersInfo(ids);
+
+    @GetMapping("/interactedUsers")
+    public ResponseEntity<List<UserInteractionDto>> getUsersInteractedWithPost(@RequestBody List<Long> ids) {
+        List<UserInteractionDto> usersLikesInfo = userService.getUsersInteractedWithPost(ids);
         return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);
     }
 

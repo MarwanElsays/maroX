@@ -8,14 +8,12 @@ import com.marox.posts.enums.PostStatus;
 import com.marox.posts.repository.LikeRepository;
 import com.marox.posts.repository.PostRepository;
 import com.marox.posts.dto.PostDto;
-import com.marox.posts.service.client.UsersFeignClient;
+import com.marox.posts.service.client.comments.CommentsFeignClient;
+import com.marox.posts.service.client.users.UsersFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -26,6 +24,8 @@ public class PostService {
     private LikeRepository likeRepository;
     @Autowired
     private UsersFeignClient usersFeignClient;
+    @Autowired
+    private CommentsFeignClient commentsFeignClient;
 
     public Long createPost(PostDto postDto) {
         // Convert DTO to entity
@@ -50,9 +50,11 @@ public class PostService {
     public PostDto getPostById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        int postLikesCount = likeRepository.countLikesByPostId(postId);
+        long postLikesCount = likeRepository.countLikesByPostId(postId);
+        long commentsCount = Optional.ofNullable(commentsFeignClient.getCommentsCountByPostId(postId).getBody())
+                .orElse(0L);
 
-        return mapToPostDto(post,postLikesCount);
+        return mapToPostDto(post,postLikesCount,commentsCount);
     }
 
     public List<PostDto> getPostsByUserId(Long userId) {
@@ -108,35 +110,47 @@ public class PostService {
     public List<UserInteractionDto> getPostLikesWithUsersInfo(Long postId) {
         List<Long> userIds = likeRepository.findUserIdsByPostId(postId);
         System.out.println(userIds);
-        return Optional.ofNullable(usersFeignClient.getLikesUsersInfo(userIds).getBody())
+        return Optional.ofNullable(usersFeignClient.getUsersInteractedWithPost(userIds).getBody())
                 .orElse(Collections.emptyList());
     }
 
-    public List<PostDto> mapResultsToPostDtos(List<Object[]> results) {
-        List<PostDto> postDtos = new ArrayList<>();
-        for (Object[] result : results) {
-            Long authorId = (Long) result[0];
-            Long postId = (Long) result[2];
-            String content = (String) result[4];
-            String title = (String) result[5];
-            PostStatus status = PostStatus.valueOf((String) result[6]);
-            Long likeCount = (Long) result[7];
 
-            PostDto postDto = new PostDto(postId, title, content, authorId, status, likeCount);
-            postDtos.add(postDto);
-        }
-        return postDtos;
+    public List<PostDto> mapResultsToPostDtos(List<Object[]> results) {
+        // 1. Extract post IDs from results
+        List<Long> postIds = results.stream()
+                .map(result -> (Long) result[2]) // postId is at index 2
+                .toList();
+
+        // 2. Fetch comment counts in bulk (single call)
+        Map<Long, Long> commentCounts = Optional.ofNullable(commentsFeignClient.getCommentsCountForPosts(postIds).getBody())
+                .orElse(Collections.emptyMap());
+
+        // 3. Map results to PostDto with functional style
+        return results.stream()
+                .map(result -> {
+                    Long authorId = (Long) result[0];
+                    Long postId = (Long) result[2];
+                    String content = (String) result[4];
+                    String title = (String) result[5];
+                    PostStatus status = PostStatus.valueOf((String) result[6]);
+                    Long likeCount = (Long) result[7];
+                    Long commentCount = commentCounts.getOrDefault(postId, 0L);
+
+                    return new PostDto(postId, title, content, authorId, status, likeCount, commentCount);
+                })
+                .toList();
     }
 
     // Helper method to convert Post entity to PostDto
-    private PostDto mapToPostDto(Post post, int postLikesCount) {
+    private PostDto mapToPostDto(Post post, long postLikesCount, long commentsCount) {
         return PostDto.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .authorId(post.getAuthorId())
                 .status(post.getStatus())
-                .LikesCount(postLikesCount)
+                .likesCount(postLikesCount)
+                .commentsCount(commentsCount)
                 .build();
     }
 

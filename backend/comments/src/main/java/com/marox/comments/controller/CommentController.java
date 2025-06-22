@@ -2,6 +2,7 @@ package com.marox.comments.controller;
 
 import com.marox.comments.dto.AccountsContactInfoDto;
 import com.marox.comments.dto.CommentDto;
+import com.marox.comments.dto.CommentWithUserInfoDto;
 import com.marox.comments.service.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -42,8 +44,8 @@ public class CommentController {
     }
 
     @GetMapping("getCommentsByPostId/{postId}")
-    public ResponseEntity<List<CommentDto>> getCommentsByPostId(@PathVariable Long postId) {
-        List<CommentDto> comments = commentService.getCommentsByPostId(postId);
+    public ResponseEntity<List<CommentWithUserInfoDto>> getCommentsByPostId(@PathVariable Long postId) {
+        List<CommentWithUserInfoDto> comments = commentService.getCommentsByPostId(postId);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -57,6 +59,24 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/getCommentCountByPostId/{postId}")
+    public ResponseEntity<Long> getCommentCountByPostId(@PathVariable Long postId) {
+        Long commentsCount = commentService.getCommentsCountByPostId(postId);
+        return new ResponseEntity<>(commentsCount, HttpStatus.OK);
+    }
+
+    @GetMapping("/getCommentsCountByPostId/{postId}")
+    public ResponseEntity<Long> getCommentsCountByPostId(@PathVariable Long postId) {
+        Long commentsCount = commentService.getCommentsCountByPostId(postId);
+        return new ResponseEntity<>(commentsCount, HttpStatus.OK);
+    }
+
+    @GetMapping("/getCommentsCountForPosts")
+    public ResponseEntity<Map<Long, Long>> getCommentsCountForPosts(@RequestBody List<Long> postIds) {
+        Map<Long, Long> commentCounts = commentService.getCommentsCountForPosts(postIds);
+        return new ResponseEntity<>(commentCounts, HttpStatus.OK);
     }
 
     @GetMapping("/getContactInfo")

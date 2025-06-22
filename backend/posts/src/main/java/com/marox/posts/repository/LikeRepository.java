@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface LikeRepository extends JpaRepository<Like, LikeId> {
     @Query(value = "select count(l.post_Id) from likes as l where l.post_Id = :postId", nativeQuery = true)
-    int countLikesByPostId(@Param("postId") Long postId);
+    Long countLikesByPostId(@Param("postId") Long postId);
 
     @Query(value = "select user_id from likes where post_id = :postId", nativeQuery = true)
     List<Long> findUserIdsByPostId(@Param("postId") Long postId);

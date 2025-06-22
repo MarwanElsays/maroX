@@ -1,12 +1,19 @@
 package com.marox.comments.service;
 
 import com.marox.comments.dto.CommentDto;
+import com.marox.comments.dto.CommentWithUserInfoDto;
+import com.marox.comments.dto.UserInteractionDto;
 import com.marox.comments.entity.Comment;
 import com.marox.comments.repository.CommentRepository;
+import com.marox.comments.service.client.users.UsersFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -14,6 +21,8 @@ public class CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UsersFeignClient usersFeignClient;
 
     public Long createComment(CommentDto commentDto) {
         // Convert DTO to entity
@@ -43,11 +52,26 @@ public class CommentService {
         return mapToCommentDto(comment);
     }
 
-    public List<CommentDto> getCommentsByPostId(Long postId) {
-        List<Comment> comments = commentRepository.findByPostId(postId);
+    public List<CommentWithUserInfoDto> getCommentsByPostId(Long postId) {
+        List<CommentDto> comments = commentRepository.findByPostId(postId).stream().map(this::mapToCommentDto).toList();
+
+        if (comments.isEmpty()) return Collections.emptyList();
+
+        List<Long> userIds = comments.stream().map(CommentDto::getUserId).toList();
+
+        Map<Long, UserInteractionDto> usersMap = Optional.ofNullable(
+                        usersFeignClient.getUsersInteractedWithPost(userIds).getBody()
+                ).orElse(Collections.emptyList())
+                .stream()
+                .collect(Collectors.toMap(UserInteractionDto::getUserId, Function.identity()));
+
+        // Merge data (O(n) time)
         return comments.stream()
-                .map(this::mapToCommentDto)
-                .collect(Collectors.toList());
+                .map(comment -> CommentWithUserInfoDto.builder()
+                        .comment(comment)
+                        .user(usersMap.get(comment.getUserId()))
+                        .build())
+                .toList();
     }
 
     public void updateComment(Long commentId, CommentDto commentDto) {
@@ -69,6 +93,21 @@ public class CommentService {
 
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    public Long getCommentsCountByPostId(Long postId) {
+        return commentRepository.countByPostId(postId);
+    }
+
+    public Map<Long, Long> getCommentsCountForPosts(List<Long> postIds) {
+        // Get counts from DB
+        List<Object[]> results = commentRepository.countCommentsByPostIds(postIds);
+        // Convert to Map<postId, count>
+        return results.stream()
+                .collect(Collectors.toMap(
+                        res -> (Long) res[0],  // postId
+                        res -> (Long) res[1]   // count
+                ));
     }
 
     private CommentDto mapToCommentDto(Comment comment) {
