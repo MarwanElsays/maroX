@@ -61,19 +61,13 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/getCommentCountByPostId/{postId}")
-    public ResponseEntity<Long> getCommentCountByPostId(@PathVariable Long postId) {
-        Long commentsCount = commentService.getCommentsCountByPostId(postId);
-        return new ResponseEntity<>(commentsCount, HttpStatus.OK);
-    }
-
     @GetMapping("/getCommentsCountByPostId/{postId}")
     public ResponseEntity<Long> getCommentsCountByPostId(@PathVariable Long postId) {
         Long commentsCount = commentService.getCommentsCountByPostId(postId);
         return new ResponseEntity<>(commentsCount, HttpStatus.OK);
     }
 
-    @GetMapping("/getCommentsCountForPosts")
+    @PostMapping("/getCommentsCountForPosts")
     public ResponseEntity<Map<Long, Long>> getCommentsCountForPosts(@RequestBody List<Long> postIds) {
         Map<Long, Long> commentCounts = commentService.getCommentsCountForPosts(postIds);
         return new ResponseEntity<>(commentCounts, HttpStatus.OK);

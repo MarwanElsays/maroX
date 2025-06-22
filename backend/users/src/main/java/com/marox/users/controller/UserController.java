@@ -104,7 +104,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/interactedUsers")
+    @PostMapping("/interactedUsers")
     public ResponseEntity<List<UserInteractionDto>> getUsersInteractedWithPost(@RequestBody List<Long> ids) {
         List<UserInteractionDto> usersLikesInfo = userService.getUsersInteractedWithPost(ids);
         return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);

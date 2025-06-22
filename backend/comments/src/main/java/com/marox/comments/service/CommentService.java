@@ -59,11 +59,16 @@ public class CommentService {
 
         List<Long> userIds = comments.stream().map(CommentDto::getUserId).toList();
 
-        Map<Long, UserInteractionDto> usersMap = Optional.ofNullable(
+        List<UserInteractionDto> usersInteraction = Optional.ofNullable(
                         usersFeignClient.getUsersInteractedWithPost(userIds).getBody()
-                ).orElse(Collections.emptyList())
-                .stream()
+                ).orElse(Collections.emptyList());
+
+        System.out.println("UsersInteraction: " + usersInteraction);
+
+        Map<Long, UserInteractionDto> usersMap = usersInteraction.stream()
                 .collect(Collectors.toMap(UserInteractionDto::getUserId, Function.identity()));
+
+        System.out.println("UsersMap: " + usersMap);
 
         // Merge data (O(n) time)
         return comments.stream()
@@ -71,6 +76,7 @@ public class CommentService {
                         .comment(comment)
                         .user(usersMap.get(comment.getUserId()))
                         .build())
+                .peek(commentWithUser -> System.out.println("CommentWithUser: " + commentWithUser))
                 .toList();
     }
 
@@ -112,6 +118,7 @@ public class CommentService {
 
     private CommentDto mapToCommentDto(Comment comment) {
         return CommentDto.builder()
+                .commentId(comment.getCommentId())
                 .postId(comment.getPostId())
                 .userId(comment.getUserId())
                 .content(comment.getContent())

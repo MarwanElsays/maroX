@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UsersFallback implements UsersFeignClient {
+public class PostsUsersFallback implements UsersFeignClient {
     @Override
     public ResponseEntity<List<UserInteractionDto>> getUsersInteractedWithPost(List<Long> ids) {
-        System.out.println("Users feign client fallback");
+        System.out.println("Users feign client in posts fallback");
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
