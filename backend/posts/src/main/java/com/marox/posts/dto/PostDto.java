@@ -1,6 +1,5 @@
 package com.marox.posts.dto;
 
-import com.marox.posts.entity.Post;
 import com.marox.posts.enums.PostStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

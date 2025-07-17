@@ -25,4 +25,8 @@ public class UserProfileDto {
     private String lastName;
 
     private List<PostDto> posts;
+
+    private long numOfFollowers;
+
+    private long numOfFollowing;
 }

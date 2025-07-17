@@ -95,6 +95,8 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .posts(posts)
+                .numOfFollowers(user.getFollowers().size())
+                .numOfFollowing(user.getFollowing().size())
                 .build();
     }
 
