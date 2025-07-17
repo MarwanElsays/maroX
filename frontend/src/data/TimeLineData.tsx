@@ -2,7 +2,7 @@ import { ArticleCardProps } from '../components/ArticleCard/ArticleCard';
 
 export const timeLineData: ArticleCardProps[] = [
   {
-    image: 'https://picsum.photos/id/200/600/400',
+    image: 'https://picsum.photos/id/210/600/400',
     title: 'Kickoff Meeting',
     content: 'Project kickoff meeting to discuss goals and timelines.',
     badges: ['Planning'],
@@ -14,7 +14,7 @@ export const timeLineData: ArticleCardProps[] = [
     likes: 12,
   },
   {
-    image: 'https://picsum.photos/id/100/600/400',
+    image: 'https://picsum.photos/id/10/600/400',
     title: 'First Prototype Released',
     content: 'Initial prototype of the application is now available for testing.',
     badges: ['Development'],
@@ -26,7 +26,7 @@ export const timeLineData: ArticleCardProps[] = [
     likes: 34,
   },
   {
-    image: 'https://picsum.photos/id/1/600/400',
+    image: 'https://picsum.photos/id/90/500/400',
     title: 'User Feedback Round',
     content: 'Collecting user feedback on the first prototype to improve design.',
     badges: ['Testing'],
@@ -38,7 +38,7 @@ export const timeLineData: ArticleCardProps[] = [
     likes: 21,
   },
   {
-    image: 'https://picsum.photos/id/20/600/400',
+    image: 'https://picsum.photos/id/1/600/400',
     title: 'Final Release',
     content: 'The final version of the application is now live and available to users.',
     badges: ['Launch'],

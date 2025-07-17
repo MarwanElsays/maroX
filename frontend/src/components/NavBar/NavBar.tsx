@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import {
   IconTimeline,
   IconBellRinging,
-  IconFingerprint,
+  IconUser,
   IconLogout,
   IconReceipt2,
   IconSettings,
@@ -12,10 +12,10 @@ import { Code, Group } from "@mantine/core";
 import classes from "./NavBar.module.css";
 
 const data = [
+  { link: "/profile", label: "Profile", icon: IconUser },
   { link: "/timeline", label: "Timeline", icon: IconTimeline },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/bookmarks", label: "Bookmarks", icon: IconReceipt2 },
-  { link: "/security", label: "Security", icon: IconFingerprint },
   { link: "/settings", label: "Other Settings", icon: IconSettings },
 ];
 
