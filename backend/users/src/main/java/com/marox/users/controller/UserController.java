@@ -25,6 +25,7 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<Long> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+        System.out.println(userRequestDto.getFirstName());
         Long createdUserId = userService.createUser(userRequestDto);
         return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
     }
@@ -41,14 +42,14 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("getUserByEmail/{userId}")
+    @GetMapping("getUserByEmail/{email}")
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable @Email(message = "Invalid email format")
-                                                              String Email) {
-        UserResponseDto userResponseDto = userService.getUserByEmail(Email);
+                                                              String email) {
+        UserResponseDto userResponseDto = userService.getUserByEmail(email);
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("getUserByUserName/{userId}")
+    @GetMapping("getUserByUserName/{userName}")
     public ResponseEntity<UserResponseDto> getUserByUserName(@PathVariable String userName) {
         UserResponseDto userResponseDto = userService.getUserByUserName(userName);
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);

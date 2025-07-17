@@ -4,6 +4,8 @@ import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import classes from './Signup.module.css';
+import { UserRequestDto } from '@/types/UserTypes';
+import { userService } from '@/services/UsersService';
 
 interface SignupValues {
   username: string;
@@ -42,18 +44,34 @@ export default function SignupForm() {
   const navigate = useNavigate();
   const handleSubmit = async (
     values: SignupValues,
-    { setSubmitting }: FormikHelpers<SignupValues>
+    { setSubmitting, setStatus }: FormikHelpers<SignupValues>
   ) => {
     try {
-      console.log('Signing up with:', values);
-      // In a real app, you would call your API here
-      // await api.signup(values);
+      // Convert form values to UserRequestDto
+      const userData: UserRequestDto = {
+        userId: 0, // userId is auto-generated
+        username: values.username,
+        email: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        role: 'USER' // Default role
+      };
+
+      // Call the user service to create the user
+      const userId = await userService.createUser(userData);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('User created with ID:', userId);
+      localStorage.setItem('userId', userId.toString());
       
       // Redirect to login after successful signup
       navigate('/login');
+    } catch (error) {
+      console.error('Signup failed:', error);
+      setStatus({
+        success: false,
+        message: error instanceof Error ? error.message : 'Signup failed. Please try again.'
+      });
     } finally {
       setSubmitting(false);
     }

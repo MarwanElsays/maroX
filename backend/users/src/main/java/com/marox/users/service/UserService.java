@@ -21,6 +21,14 @@ public class UserService {
     private PostsFeignClient postsFeignClient;
 
     public Long createUser(UserRequestDto userRequestDto) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use");
+        }
+        // Check if username already exists
+        if (userRepository.existsByUsername(userRequestDto.getUsername())) {
+            throw new IllegalArgumentException("Username is already taken");
+        }
         // Convert DTO to entity using builder pattern
         User user = User.builder()
                 .username(userRequestDto.getUsername())
@@ -30,7 +38,6 @@ public class UserService {
                 .lastName(userRequestDto.getLastName())
                 .role(userRequestDto.getRole())
                 .build();
-
         // Save the user to the database
         User savedUser = userRepository.save(user);
 
@@ -158,6 +165,7 @@ public class UserService {
 
     private UserResponseDto mapToUserResponseDto(User user) {
         return UserResponseDto.builder()
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .firstName(user.getFirstName())

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   IconTimeline,
@@ -11,17 +12,22 @@ import {
 import { Code, Group } from "@mantine/core";
 import classes from "./NavBar.module.css";
 
-const userId = localStorage.getItem("userId");
-
-const data = [
-  { link: `/profile/${userId}`, label: "Profile", icon: IconUser },
-  { link: "/timeline", label: "Timeline", icon: IconTimeline },
-  { link: "/notifications", label: "Notifications", icon: IconBellRinging },
-  { link: "/bookmarks", label: "Bookmarks", icon: IconReceipt2 },
-  { link: "/settings", label: "Other Settings", icon: IconSettings },
-];
-
 export function NavBar() {
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId") ?? "0";
+    setUserId(storedUserId);
+  }, []);
+
+  const data = [
+    { link: `/profile/${userId}`, label: "Profile", icon: IconUser },
+    { link: "/timeline", label: "Timeline", icon: IconTimeline },
+    { link: "/notifications", label: "Notifications", icon: IconBellRinging },
+    { link: "/bookmarks", label: "Bookmarks", icon: IconReceipt2 },
+    { link: "/settings", label: "Other Settings", icon: IconSettings },
+  ];
+
   const links = data.map((item) => (
     <NavLink
       to={item.link}

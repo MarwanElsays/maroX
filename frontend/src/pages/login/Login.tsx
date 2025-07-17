@@ -3,7 +3,7 @@ import { Button, TextInput, PasswordInput, Stack, Title, Paper, Box, Group, Text
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import styles from './Login.module.css';
-import { Link } from 'react-router-dom'; // Import if using React Router
+import { Link, useNavigate } from 'react-router-dom'; // Import if using React Router
 
 interface FormValues {
   email: string;
@@ -21,14 +21,14 @@ const initialValues: FormValues = {
 };
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const handleSubmit = (
     values: FormValues,
     { setSubmitting }: FormikHelpers<FormValues>
   ) => {
     console.log('Logging in with:', values);
-    setTimeout(() => {
-      setSubmitting(false);
-    }, 1000);
+    navigate('/timeline');
+    setSubmitting(false);
   };
 
   return (

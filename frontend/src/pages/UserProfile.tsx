@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { ArticleCard } from "@/components/ArticleCard/ArticleCard";
 import { HStack, Image, VStack, Text, SimpleGrid, Tabs, Box, Stack } from "@chakra-ui/react";
 import { LuActivity, LuHeart } from "react-icons/lu";
-import { UserProfileInfo } from "@/types/UserProfileInfo";
+import { UserProfileInfo } from "@/types/UserTypes";
+import { userService } from "@/services/UsersService";
 
 export function UserProfile() {
   const { userId } = useParams(); 
@@ -13,8 +13,8 @@ export function UserProfile() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/getUserProfile/${userId}`);
-        setUserProfileInfo(response.data);
+        const profileData = await userService.getUserProfile(Number(userId));
+        setUserProfileInfo(profileData)
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
       }

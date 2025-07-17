@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserResponseDto {
 
+    @NotNull(message = "Role cannot be null")
+    private Long userId;
+
     @NotEmpty(message = "Username cannot be null or empty")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
