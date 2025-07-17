@@ -15,6 +15,7 @@
     "@mantine/core": "^7.17.1",
     "@mantine/hooks": "^7.17.1",
     "@tabler/icons-react": "^3.31.0",
+    "axios": "^1.10.0",
     "frontend": "file:",
     "next-themes": "^0.4.6",
     "react": "^19.0.0",

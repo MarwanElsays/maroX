@@ -11,28 +11,17 @@ import {
   Box,
 } from "@mantine/core";
 import classes from "./ArticleCard.module.css";
-
-export interface ArticleCardProps {
-  image?: string; // Made optional
-  title: string;
-  content: string; // Added content prop
-  badges: string[];
-  author: {
-    name: string;
-    avatar: string;
-  };
-  postedAt: string;
-  likes: number;
-}
+import { ArticleCardProps } from "@/types/ArticleCardProps";
 
 export function ArticleCard({
-  image,
-  title,
-  content,
-  badges,
-  author,
-  postedAt,
-  likes,
+  post,
+  image = "https://source.unsplash.com/random/800x600?post",
+  badges = [post.status],
+  author = {
+    name: "Unknown Author",
+    avatar: "https://www.gravatar.com/avatar?d=mp",
+  },
+  postedAt = "Some time ago",
 }: ArticleCardProps) {
   const theme = useMantineTheme();
 
@@ -40,7 +29,7 @@ export function ArticleCard({
     <Card withBorder padding="lg" radius="md" className={classes.card}>
       {image && (
         <Card.Section mb="sm">
-          <Image src={image} alt={title} height={180} />
+          <Image src={image} alt={post.title} height={180} />
         </Card.Section>
       )}
 
@@ -53,16 +42,12 @@ export function ArticleCard({
       </Group>
 
       <Text fw={700} className={classes.title} mt="xs">
-        {title}
+        {post.title}
       </Text>
 
-      {content && (
-        <Box mt="md" className={classes.content}>
-          <Text lineClamp={3}>
-            {content}
-          </Text>
-        </Box>
-      )}
+      <Box mt="md" className={classes.content}>
+        <Text lineClamp={3}>{post.content}</Text>
+      </Box>
 
       <Group mt="lg">
         <Avatar src={author.avatar} radius="sm" />
@@ -77,7 +62,7 @@ export function ArticleCard({
       <Card.Section className={classes.footer}>
         <Group justify="space-between">
           <Text fz="xs" c="dimmed">
-            {likes} people liked this
+            {post.likesCount} people liked this
           </Text>
           <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">

@@ -19,7 +19,7 @@ export default function App() {
             <Route path="/" element={<Timeline/>} />
             <Route path="/post" element={<Post/>} />
             <Route path="/timeline" element={<Timeline/>} />
-            <Route path="/profile" element={<UserProfile/>} />
+            <Route path="/profile/:userId" element={<UserProfile />} />
           </Routes>
           <FollowBar/>
         </Container>

@@ -11,8 +11,10 @@ import {
 import { Code, Group } from "@mantine/core";
 import classes from "./NavBar.module.css";
 
+const userId = localStorage.getItem("userId");
+
 const data = [
-  { link: "/profile", label: "Profile", icon: IconUser },
+  { link: `/profile/${userId}`, label: "Profile", icon: IconUser },
   { link: "/timeline", label: "Timeline", icon: IconTimeline },
   { link: "/notifications", label: "Notifications", icon: IconBellRinging },
   { link: "/bookmarks", label: "Bookmarks", icon: IconReceipt2 },
