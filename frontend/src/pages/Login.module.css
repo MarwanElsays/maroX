@@ -1,0 +1,66 @@
+.fullPageContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #000103 0%, #0a2046 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.siteTitle {
+  position: fixed;
+  top: 40px;
+  text-align: center;
+  color: #ffffff; 
+  font-size: 3rem;
+  font-family:'Lucida Sans', sans-serif;
+  font-weight: 700;
+}
+
+.loginPaper {
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  padding: 2rem;
+  border: 1px solid #ddd;
+}
+
+.loginTitle {
+  text-align: center;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.loginInput {
+  border-color: #ddd;
+}
+
+.loginInput:focus {
+  border-color: black;
+}
+
+.loginLabel {
+  color: black;
+}
+
+.loginButton {
+  background-color: black;
+  color: white;
+  margin-top: 15px;
+}
+
+.loginButton:hover {
+  background-color: #333;
+}
+
+.signupButton {
+  border-color: #228be6;
+  color: #228be6;
+}
+
+.signupButton:hover {
+  background-color: #f0f5ff;
+}
