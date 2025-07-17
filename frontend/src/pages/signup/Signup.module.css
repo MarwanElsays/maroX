@@ -1,0 +1,81 @@
+.fullPageContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #000103 0%, #0a2046 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.siteTitle {
+  position: fixed;
+  top: 40px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 3rem;
+  font-family: 'Lucida Sans', sans-serif;
+  font-weight: 700;
+}
+
+.signupPaper {
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  margin-top: 100px; /* Adjusted to position below the site title */
+}
+
+.signupTitle {
+  text-align: center;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.stackGap {
+  gap: 8px !important; /* Controls vertical spacing between fields */
+}
+
+.groupGap {
+  gap: 8px !important; /* Controls horizontal spacing between first/last name */
+}
+
+.signupInput {
+  border-color: #ddd;
+  margin-bottom: 4px; /* Additional spacing control */
+}
+
+.signupInput:focus {
+  border-color: black;
+}
+
+.signupLabel {
+  color: black;
+  margin-bottom: 2px; /* Reduced from 4px */
+}
+
+.loginButton {
+  background-color: black;
+  color: white;
+  border-color: black;
+  margin-top: 12px; /* Reduced from 15px */
+}
+
+.loginButton:hover {
+  background-color: #333;
+  color: black;
+}
+
+.signupButton {
+  background-color: black;
+  color: rgb(255, 255, 255);
+  border-color: black;
+}
+
+.signupButton:hover {
+  background-color: #333;
+  color: black;
+}
