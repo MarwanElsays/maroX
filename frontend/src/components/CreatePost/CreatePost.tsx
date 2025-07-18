@@ -14,6 +14,7 @@ export default function CreatePost() {
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<CropArea | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

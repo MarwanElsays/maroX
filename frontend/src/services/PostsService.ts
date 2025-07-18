@@ -150,6 +150,9 @@ class PostsService {
     }
   }
 
+  getImageUrl(authorId: number, fileName: string): string {
+    return `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getImage/${authorId}/${encodeURIComponent(fileName)}`;
+  }
 
   // Error handling helper
   private handleError(error: unknown): void {

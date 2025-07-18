@@ -33,7 +33,7 @@ public class PostService {
     private FileStorageUtil fileStorageUtil;
 
     public Long createPost(PostRequestDto postDto) {
-        String savedFileName = fileStorageUtil.uploadFile(postDto.getImageFile());
+        String savedFileName = fileStorageUtil.uploadFile(postDto.getAuthorId(),postDto.getImageFile());
 
         Post post = Post.builder()
                 .title(postDto.getTitle())
@@ -78,10 +78,10 @@ public class PostService {
 
         // Delete old image if present
         if (post.getImageFileName() != null) {
-            fileStorageUtil.deleteFile(post.getImageFileName());
+            fileStorageUtil.deleteFile(post.getAuthorId(), post.getImageFileName());
         }
         // Upload new image
-        String newFileName = fileStorageUtil.uploadFile(postDto.getImageFile());
+        String newFileName = fileStorageUtil.uploadFile(postDto.getAuthorId(), postDto.getImageFile());
         post.setImageFileName(newFileName);
 
         // Save the updated post
@@ -94,7 +94,7 @@ public class PostService {
 
         // Delete image file
         if (post.getImageFileName() != null) {
-            fileStorageUtil.deleteFile(post.getImageFileName());
+            fileStorageUtil.deleteFile(post.getAuthorId(), post.getImageFileName());
         }
 
         postRepository.delete(post);

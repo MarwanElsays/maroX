@@ -94,10 +94,10 @@ public class PostController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping("/getImage/{fileName:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String fileName) {
+    @GetMapping("/getImage/{authorId}/{fileName:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable long authorId,@PathVariable String fileName) {
         try {
-            Resource file = fileStorageUtil.loadFile(fileName);
+            Resource file = fileStorageUtil.loadFile(authorId,fileName);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
                     .body(file);
