@@ -1,6 +1,6 @@
 package com.marox.users.service.client;
 
-import com.marox.users.dto.PostDto;
+import com.marox.users.dto.PostResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,6 @@ import java.util.List;
 public interface PostsFeignClient {
 
     @GetMapping(value = "/api/getPostsByUserId/{userId}")
-    ResponseEntity<List<PostDto>> getPostsByUserId(@PathVariable Long userId);
+    ResponseEntity<List<PostResponseDto>> getPostsByUserId(@PathVariable Long userId);
 
 }

@@ -24,7 +24,7 @@ public class UserProfileDto {
     @NotEmpty(message = "Last name cannot be null or empty")
     private String lastName;
 
-    private List<PostDto> posts;
+    private List<PostResponseDto> posts;
 
     private long numOfFollowers;
 

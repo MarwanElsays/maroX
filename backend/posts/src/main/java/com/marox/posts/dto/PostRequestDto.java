@@ -1,17 +1,19 @@
-package com.marox.users.dto;
+package com.marox.posts.dto;
 
-import com.marox.users.enums.PostStatus;
+import com.marox.posts.enums.PostStatus;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
+public class PostRequestDto {
 
     @NotNull(message = "Post ID cannot be null")
     private Long postId;
@@ -29,7 +31,6 @@ public class PostDto {
     @NotNull(message = "Status cannot be null")
     private PostStatus status;
 
-    private long likesCount;
-
-    private long commentsCount;
+    @Transient
+    private transient MultipartFile imageFile;
 }

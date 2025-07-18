@@ -1,5 +1,7 @@
 package com.marox.posts.service;
 
+import com.marox.posts.dto.PostRequestDto;
+import com.marox.posts.dto.PostResponseDto;
 import com.marox.posts.dto.UserInteractionDto;
 import com.marox.posts.entity.Like;
 import com.marox.posts.entity.LikeId;
@@ -7,12 +9,11 @@ import com.marox.posts.entity.Post;
 import com.marox.posts.enums.PostStatus;
 import com.marox.posts.repository.LikeRepository;
 import com.marox.posts.repository.PostRepository;
-import com.marox.posts.dto.PostDto;
 import com.marox.posts.service.client.comments.CommentsFeignClient;
 import com.marox.posts.service.client.users.UsersFeignClient;
+import com.marox.posts.utilities.FileStorageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -26,28 +27,29 @@ public class PostService {
     private UsersFeignClient usersFeignClient;
     @Autowired
     private CommentsFeignClient commentsFeignClient;
+    @Autowired
+    private FileStorageUtil fileStorageUtil;
 
-    public Long createPost(PostDto postDto) {
-        // Convert DTO to entity
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
-        post.setAuthorId(postDto.getAuthorId());
-        post.setStatus(postDto.getStatus());
+    public Long createPost(PostRequestDto postDto) {
+        String savedFileName = fileStorageUtil.uploadFile(postDto.getImageFile());
 
-        // Save the post to the database
-        Post savedPost = postRepository.save(post);
+        Post post = Post.builder()
+                .title(postDto.getTitle())
+                .content(postDto.getContent())
+                .authorId(postDto.getAuthorId())
+                .status(postDto.getStatus())
+                .imageFileName(savedFileName)
+                .build();
 
-        // Convert entity back to DTO
-        return savedPost.getPostId();
+        return postRepository.save(post).getPostId();
     }
 
-    public List<PostDto> getAllPosts() {
+    public List<PostResponseDto> getAllPosts() {
         List<Object[]> results = postRepository.findAllPostsWithLikes();
         return mapResultsToPostDtos(results);
     }
 
-    public PostDto getPostById(Long postId) {
+    public PostResponseDto getPostById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         long postLikesCount = likeRepository.countLikesByPostId(postId);
@@ -57,12 +59,12 @@ public class PostService {
         return mapToPostDto(post,postLikesCount,commentsCount);
     }
 
-    public List<PostDto> getPostsByUserId(Long userId) {
+    public List<PostResponseDto> getPostsByUserId(Long userId) {
         List<Object[]> results = postRepository.findByAuthorIdWithLikes(userId);
         return mapResultsToPostDtos(results);
     }
 
-    public void updatePost(PostDto postDto) {
+    public void updatePost(PostRequestDto postDto) {
         Post post = postRepository.findById(postDto.getPostId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -72,12 +74,28 @@ public class PostService {
         post.setAuthorId(postDto.getAuthorId());
         post.setStatus(postDto.getStatus());
 
+        // Delete old image if present
+        if (post.getImageFileName() != null) {
+            fileStorageUtil.deleteFile(post.getImageFileName());
+        }
+        // Upload new image
+        String newFileName = fileStorageUtil.uploadFile(postDto.getImageFile());
+        post.setImageFileName(newFileName);
+
         // Save the updated post
         postRepository.save(post);
     }
 
     public void deletePost(Long postId) {
-        postRepository.deleteById(postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        // Delete image file
+        if (post.getImageFileName() != null) {
+            fileStorageUtil.deleteFile(post.getImageFileName());
+        }
+
+        postRepository.delete(post);
     }
 
     public void likePost(Long userId, Long postId) {
@@ -115,7 +133,7 @@ public class PostService {
     }
 
 
-    public List<PostDto> mapResultsToPostDtos(List<Object[]> results) {
+    public List<PostResponseDto> mapResultsToPostDtos(List<Object[]> results) {
         // 1. Extract post IDs from results
         List<Long> postIds = results.stream()
                 .map(result -> (Long) result[2]) // postId is at index 2
@@ -135,15 +153,16 @@ public class PostService {
                     PostStatus status = PostStatus.valueOf((String) result[6]);
                     Long likeCount = (Long) result[7];
                     Long commentCount = commentCounts.getOrDefault(postId, 0L);
+                    String imageFileName = ((String) result[8]);
 
-                    return new PostDto(postId, title, content, authorId, status, likeCount, commentCount);
+                    return new PostResponseDto(postId, title, content, authorId, status, likeCount, commentCount, imageFileName);
                 })
                 .toList();
     }
 
     // Helper method to convert Post entity to PostDto
-    private PostDto mapToPostDto(Post post, long postLikesCount, long commentsCount) {
-        return PostDto.builder()
+    private PostResponseDto mapToPostDto(Post post, long postLikesCount, long commentsCount) {
+        return PostResponseDto.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -151,6 +170,7 @@ public class PostService {
                 .status(post.getStatus())
                 .likesCount(postLikesCount)
                 .commentsCount(commentsCount)
+                .imageFileName(post.getImageFileName())
                 .build();
     }
 

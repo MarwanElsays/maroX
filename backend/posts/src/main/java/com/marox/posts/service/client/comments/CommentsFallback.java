@@ -13,7 +13,7 @@ public class CommentsFallback implements CommentsFeignClient {
     @Override
     public ResponseEntity<Long> getCommentsCountByPostId(Long postId) {
         System.out.println("Comments feign client fallback");
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(0L, HttpStatus.OK);
     }
 
     @Override

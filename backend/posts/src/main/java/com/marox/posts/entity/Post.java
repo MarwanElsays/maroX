@@ -40,4 +40,6 @@ public class Post {
 
     @OneToMany(mappedBy = "id.post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Like> likes;
+
+    private String imageFileName; // Only store filename
 }

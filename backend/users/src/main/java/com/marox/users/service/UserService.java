@@ -94,7 +94,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<PostDto> posts = Optional.ofNullable(postsFeignClient.getPostsByUserId(userId).getBody())
+        List<PostResponseDto> posts = Optional.ofNullable(postsFeignClient.getPostsByUserId(userId).getBody())
                 .orElse(Collections.emptyList());
 
         return UserProfileDto.builder()

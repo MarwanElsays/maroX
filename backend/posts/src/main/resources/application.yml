@@ -25,6 +25,10 @@ spring:
     port: 5672
     username: "guest"
     password: "guest"
+  servlet:
+    multipart:
+          max-file-size: 30MB
+          max-request-size: 30MB
 
 management:
   endpoints:
@@ -77,3 +81,7 @@ resilience4j.retry:
         - java.lang.NullPointerException
       retryExceptions:
         - java.util.concurrent.TimeoutException
+
+post:
+  image:
+    upload-dir: C:/Users/MARWAN/Pictures/MaroX
