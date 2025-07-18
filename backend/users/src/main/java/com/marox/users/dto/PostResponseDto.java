@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,6 +27,8 @@ public class PostResponseDto {
 
     @NotNull(message = "Author ID cannot be null")
     private Long authorId;
+
+    private LocalDateTime createdAt;
 
     @NotNull(message = "Status cannot be null")
     private PostStatus status;

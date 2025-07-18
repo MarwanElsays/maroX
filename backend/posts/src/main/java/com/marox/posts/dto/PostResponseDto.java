@@ -1,13 +1,13 @@
 package com.marox.posts.dto;
 
 import com.marox.posts.enums.PostStatus;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -27,6 +27,8 @@ public class PostResponseDto {
 
     @NotNull(message = "Author ID cannot be null")
     private Long authorId;
+
+    private LocalDateTime createdAt;
 
     @NotNull(message = "Status cannot be null")
     private PostStatus status;

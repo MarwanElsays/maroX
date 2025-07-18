@@ -2,6 +2,7 @@ import { ArticleCard } from '../components/ArticleCard/ArticleCard';
 import { Container, Stack, Text } from '@mantine/core';
 import { timeLineData } from '../data/TimeLineData';
 import CreatePost from '@/components/CreatePost/CreatePost';
+import { Spacer } from '@chakra-ui/react';
 
 export default function TimelinePage() {
   return (
@@ -10,6 +11,7 @@ export default function TimelinePage() {
         MaroX
       </Text>
       <CreatePost/>
+      <Spacer h={7}/>
       <Stack gap="l">
         {timeLineData.map((event, index) => (
           <ArticleCard key={index} {...event} />

@@ -1,18 +1,40 @@
 import { UserInteractionDto } from '@/types/Interactions';
-import { PostInfo } from '@/types/PostInfo';
+import { PostRequestDto, PostResponseDto } from '@/types/PostInfo';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 const API_GATEWAY_BASE_URL = 'http://localhost:8072'; // API Gateway URL
 const POST_SERVICE_PREFIX = '/marox/posts/api'; // Route prefix in gateway
 
 class PostsService {
+
+  private convertToFormData(postData: PostRequestDto): FormData {
+    const formData = new FormData();
+    formData.append("postId", postData.postId.toString());
+    formData.append("title", postData.title);
+    formData.append("content", postData.content);
+    formData.append("authorId", postData.authorId.toString());
+    formData.append("status", postData.status);
+    if (postData.imageFile) {
+      formData.append("imageFile", postData.imageFile); // Must match backend field name
+    }
+    return formData;
+  }
+  
   // Create a new post
-  async createPost(postData: PostInfo): Promise<number> {
+  async createPost(postData: PostRequestDto): Promise<number> {
     try {
+      const formData = this.convertToFormData(postData);
+      // Send the form data to the backend
       const response: AxiosResponse<number> = await axios.post(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/createPost`,
-        postData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       return response.data;
     } catch (error) {
       this.handleError(error);
@@ -21,9 +43,9 @@ class PostsService {
   }
 
   // Get all posts
-  async getAllPosts(): Promise<PostInfo[]> {
+  async getAllPosts(): Promise<PostResponseDto[]> {
     try {
-      const response: AxiosResponse<PostInfo[]> = await axios.get(
+      const response: AxiosResponse<PostResponseDto[]> = await axios.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getAllPosts`
       );
       return response.data;
@@ -34,9 +56,9 @@ class PostsService {
   }
 
   // Get post by ID
-  async getPostById(postId: number): Promise<PostInfo> {
+  async getPostById(postId: number): Promise<PostResponseDto> {
     try {
-      const response: AxiosResponse<PostInfo> = await axios.get(
+      const response: AxiosResponse<PostResponseDto> = await axios.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getPostById/${postId}`
       );
       return response.data;
@@ -47,9 +69,9 @@ class PostsService {
   }
 
   // Get posts by user ID (with retry logic)
-  async getPostsByUserId(userId: number): Promise<PostInfo[]> {
+  async getPostsByUserId(userId: number): Promise<PostResponseDto[]> {
     try {
-      const response: AxiosResponse<PostInfo[]> = await axios.get(
+      const response: AxiosResponse<PostResponseDto[]> = await axios.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getPostsByUserId/${userId}`
       );
       return response.data;
@@ -60,11 +82,18 @@ class PostsService {
   }
 
   // Update a post
-  async updatePost(postData: PostInfo): Promise<void> {
+  async updatePost(postData: PostRequestDto): Promise<void> {
     try {
+      const formData = this.convertToFormData(postData);
+      // Send the form data to the backend
       await axios.put(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/updatePost/${postData.postId}`,
-        postData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
     } catch (error) {
       this.handleError(error);

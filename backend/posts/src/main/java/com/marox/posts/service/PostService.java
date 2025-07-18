@@ -14,6 +14,8 @@ import com.marox.posts.service.client.users.UsersFeignClient;
 import com.marox.posts.utilities.FileStorageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -147,6 +149,7 @@ public class PostService {
         return results.stream()
                 .map(result -> {
                     Long authorId = (Long) result[0];
+                    LocalDateTime dateTime = (LocalDateTime) result[1];
                     Long postId = (Long) result[2];
                     String content = (String) result[4];
                     String title = (String) result[5];
@@ -155,7 +158,17 @@ public class PostService {
                     Long commentCount = commentCounts.getOrDefault(postId, 0L);
                     String imageFileName = ((String) result[8]);
 
-                    return new PostResponseDto(postId, title, content, authorId, status, likeCount, commentCount, imageFileName);
+                    return PostResponseDto.builder()
+                            .postId(postId)
+                            .title(title)
+                            .content(content)
+                            .authorId(authorId)
+                            .createdAt(dateTime)
+                            .status(status)
+                            .likesCount(likeCount)
+                            .commentsCount(commentCount)
+                            .imageFileName(imageFileName)
+                            .build();
                 })
                 .toList();
     }
@@ -167,6 +180,7 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .authorId(post.getAuthorId())
+                .createdAt(post.getCreatedAt())
                 .status(post.getStatus())
                 .likesCount(postLikesCount)
                 .commentsCount(commentsCount)
