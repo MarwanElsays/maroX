@@ -114,9 +114,9 @@ class UserService {
   }
 
   // Get Followers
-  async getFollowers(userId: number): Promise<UserResponseDto[]> {
+  async getFollowers(userId: number): Promise<UserInteractionDto[]> {
     try {
-      const response: AxiosResponse<UserResponseDto[]> = await axios.get(
+      const response: AxiosResponse<UserInteractionDto[]> = await axios.get(
         `${API_GATEWAY_BASE_URL}${USER_SERVICE_PREFIX}/getFollowers/${userId}`
       );
       return response.data;
@@ -127,9 +127,9 @@ class UserService {
   }
 
   // Get Following
-  async getFollowing(userId: number): Promise<UserResponseDto[]> {
+  async getFollowing(userId: number): Promise<UserInteractionDto[]> {
     try {
-      const response: AxiosResponse<UserResponseDto[]> = await axios.get(
+      const response: AxiosResponse<UserInteractionDto[]> = await axios.get(
         `${API_GATEWAY_BASE_URL}${USER_SERVICE_PREFIX}/getFollowing/${userId}`
       );
       return response.data;

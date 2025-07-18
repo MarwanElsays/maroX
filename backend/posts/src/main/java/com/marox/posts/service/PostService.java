@@ -15,6 +15,7 @@ import com.marox.posts.utilities.FileStorageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -134,6 +135,19 @@ public class PostService {
                 .orElse(Collections.emptyList());
     }
 
+    public List<PostResponseDto> getUserLikedPosts(Long userId) {
+        List<Post> results = likeRepository.findLikedPostsByUserId(userId);
+
+        return results.stream()
+                .map(post -> {
+                    long postLikesCount = likeRepository.countLikesByPostId(post.getPostId());
+                    long commentsCount = Optional.ofNullable(commentsFeignClient.getCommentsCountByPostId(post.getPostId()).getBody())
+                            .orElse(0L);
+
+                    return mapToPostDto(post, postLikesCount, commentsCount);
+                })
+                .toList();
+    }
 
     public List<PostResponseDto> mapResultsToPostDtos(List<Object[]> results) {
         // 1. Extract post IDs from results
@@ -149,14 +163,14 @@ public class PostService {
         return results.stream()
                 .map(result -> {
                     Long authorId = (Long) result[0];
-                    LocalDateTime dateTime = (LocalDateTime) result[1];
+                    LocalDateTime dateTime = ((Timestamp) result[1]).toLocalDateTime();
                     Long postId = (Long) result[2];
                     String content = (String) result[4];
-                    String title = (String) result[5];
-                    PostStatus status = PostStatus.valueOf((String) result[6]);
-                    Long likeCount = (Long) result[7];
+                    String imageFileName = ((String) result[5]);
+                    String title = (String) result[6];
+                    PostStatus status = PostStatus.valueOf((String) result[7]);
+                    Long likeCount = (Long) result[8];
                     Long commentCount = commentCounts.getOrDefault(postId, 0L);
-                    String imageFileName = ((String) result[8]);
 
                     return PostResponseDto.builder()
                             .postId(postId)

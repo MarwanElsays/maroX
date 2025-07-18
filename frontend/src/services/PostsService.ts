@@ -154,6 +154,19 @@ class PostsService {
     return `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getImage/${authorId}/${encodeURIComponent(fileName)}`;
   }
 
+  // Get post likes with user info
+  async getUserLikedPosts(userId: number): Promise<PostResponseDto[]> {
+    try {
+      const response: AxiosResponse<PostResponseDto[]> = await axios.get(
+        `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getUserLikedPosts/${userId}`
+      );
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
   // Error handling helper
   private handleError(error: unknown): void {
     if (axios.isAxiosError(error)) {

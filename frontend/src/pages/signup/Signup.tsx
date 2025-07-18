@@ -19,6 +19,7 @@ const signupSchema = Yup.object().shape({
   username: Yup.string()
     .min(3, 'Username must be at least 3 characters')
     .max(50, 'Username must be less than 50 characters')
+    .matches(/^[^/\\]*$/, 'Username must not contain slashes')
     .required('Username is required'),
   email: Yup.string()
     .email('Invalid email address')

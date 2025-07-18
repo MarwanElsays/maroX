@@ -1,12 +1,11 @@
-import { PostInfo } from "@/types/PostInfo";
+import { PostResponseDto } from "@/types/PostInfo";
 
 export interface ArticleCardProps {
-  post: PostInfo;
-  image?: string;
+  post: PostResponseDto;
+  imageUrl?: string;
   badges?: string[];
-  author?: {
+  author: {
     name: string;
     avatar: string;
   };
-  postedAt?: string;
 }

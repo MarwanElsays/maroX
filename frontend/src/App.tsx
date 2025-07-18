@@ -9,6 +9,8 @@ import FollowBar from './components/FollowBar/FollowBar';
 import { UserProfile } from './pages/UserProfile';
 import LoginForm from './pages/login/Login';
 import SignupForm from './pages/signup/Signup';
+import { FollowersPage } from './pages/FollowersPage';
+import { FollowingPage } from './pages/FollowingPage';
 
 export default function App() {
   return (
@@ -34,6 +36,8 @@ function AppContent() {
         <Route path="/post" element={<Post />} />
         <Route path="/timeline" element={<Timeline />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
+        <Route path="/followers/:userName/:userId" element={<FollowersPage />} />
+        <Route path="/following/:userName/:userId" element={<FollowingPage />} />
       </Routes>
       {!isAuthPage && <FollowBar />}
     </Container>

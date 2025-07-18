@@ -106,6 +106,12 @@ public class PostController {
         }
     }
 
+    @GetMapping("/getUserLikedPosts/{userId}")
+    public ResponseEntity<List<PostResponseDto>> getUserLikedPosts(@PathVariable Long userId) {
+        List<PostResponseDto> posts = postService.getUserLikedPosts(userId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
     @GetMapping("/getContactInfo")
     public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
         return ResponseEntity

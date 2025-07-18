@@ -107,17 +107,17 @@ public class UserService {
                 .build();
     }
 
-    public List<UserResponseDto> getFollowers(Long userId) {
+    public List<UserInteractionDto> getFollowers(Long userId) {
         List<User> followers = userRepository.findFollowers(userId);
         return followers.stream()
-                .map(this::mapToUserResponseDto)
+                .map(this::mapToUserInteractionDto)
                 .collect(Collectors.toList());
     }
 
-    public List<UserResponseDto> getFollowing(Long userId) {
+    public List<UserInteractionDto> getFollowing(Long userId) {
         List<User> following = userRepository.findFollowing(userId);
         return following.stream()
-                .map(this::mapToUserResponseDto)
+                .map(this::mapToUserInteractionDto)
                 .collect(Collectors.toList());
     }
 
@@ -171,6 +171,15 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .role(user.getRole())
+                .build();
+    }
+
+    private UserInteractionDto mapToUserInteractionDto(User user) {
+        return UserInteractionDto.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .build();
     }
 }

@@ -15,25 +15,24 @@ import { ArticleCardProps } from "@/types/ArticleCardProps";
 
 export function ArticleCard({
   post,
-  image = "https://source.unsplash.com/random/800x600?post",
+  imageUrl,
   badges = [post.status],
   author = {
     name: "Unknown Author",
     avatar: "https://www.gravatar.com/avatar?d=mp",
-  },
-  postedAt = "Some time ago",
+  }
 }: ArticleCardProps) {
   const theme = useMantineTheme();
 
   return (
     <Card withBorder padding="lg" radius="md" className={classes.card}>
-      {image && (
+      {post.imageFileName && (
         <Card.Section mb="sm">
-          <Image src={image} alt={post.title} height={180} />
+          <Image src={imageUrl} alt={post.title} height={180} />
         </Card.Section>
       )}
 
-      <Group gap="xs" mt={image ? "sm" : "xs"}>
+      <Group gap="xs" mt={post.imageFileName ? "sm" : "xs"}>
         {badges.map((badge, index) => (
           <Badge key={index} w="fit-content" variant="light">
             {badge}
@@ -54,7 +53,9 @@ export function ArticleCard({
         <div>
           <Text fw={500}>{author.name}</Text>
           <Text fz="xs" c="dimmed">
-            {postedAt}
+            {post.createdAt
+              ? new Date(post.createdAt).toLocaleDateString()
+              : ""}
           </Text>
         </div>
       </Group>

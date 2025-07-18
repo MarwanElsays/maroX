@@ -1,4 +1,4 @@
-import { PostInfo } from "./PostInfo";
+import { PostResponseDto } from "./PostInfo";
 
 export type UserRole = 'ADMIN' | 'USER'; // Add other roles as needed
 
@@ -24,5 +24,5 @@ export type UserProfileInfo = {
   username: string;
   numOfFollowers: number;
   numOfFollowing: number;
-  posts: PostInfo[];
+  posts: PostResponseDto[];
 };

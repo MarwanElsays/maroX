@@ -3,74 +3,78 @@ import { ArticleCardProps } from '@/types/ArticleCardProps';
 export const timeLineData: ArticleCardProps[] = [
   {
     post: {
+      postId: 0,
       title: 'Kickoff Meeting',
       content: 'Project kickoff meeting to discuss goals and timelines.',
+      authorId: 0,
+      createdAt: '2025-01-01',
       status: "PUBLISHED",
       likesCount: 12,
-      postId: 0,
-      authorId: 0,
-      commentsCount: 0
+      commentsCount: 0,
+      imageFileName: 'https://picsum.photos/id/20/600/400',
     },
-    image: 'https://picsum.photos/id/210/600/400',
+    imageUrl: 'https://picsum.photos/id/20/600/400',
     badges: ['Planning'],
     author: {
       name: 'Alice Johnson',
       avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-    },
-    postedAt: '2025-01-01',
+    }
   },
   {
     post: {
-      title: 'First Prototype Released',
-      content: 'Initial prototype of the application is now available for testing.',
-      status: "PUBLISHED",
-      likesCount: 34,
       postId: 0,
+      title: 'Kickoff Meeting',
+      content: 'Project kickoff meeting to discuss goals and timelines.',
       authorId: 0,
-      commentsCount: 0
+      createdAt: '2025-01-01',
+      status: "PUBLISHED",
+      likesCount: 12,
+      commentsCount: 0,
+      imageFileName: 'https://picsum.photos/id/210/600/400',
     },
-    image: 'https://picsum.photos/id/10/600/400',
-    badges: ['Development'],
+    imageUrl: 'https://picsum.photos/id/210/600/400',
+    badges: ['Planning'],
     author: {
-      name: 'Bob Smith',
-      avatar: 'https://randomuser.me/api/portraits/men/75.jpg',
-    },
-    postedAt: '2025-02-10',
+      name: 'Alice Johnson',
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+    }
   },
   {
     post: {
-      title: 'User Feedback Round',
-      content: 'Collecting user feedback on the first prototype to improve design.',
-      status: "PUBLISHED",
-      likesCount: 21,
       postId: 0,
+      title: 'Kickoff Meeting',
+      content: 'Project kickoff meeting to discuss goals and timelines.',
       authorId: 0,
-      commentsCount: 0
+      createdAt: '2025-01-01',
+      status: "PUBLISHED",
+      likesCount: 12,
+      commentsCount: 0,
+      imageFileName: 'https://picsum.photos/id/1/600/400',
     },
-    image: 'https://picsum.photos/id/90/500/400',
-    badges: ['Testing'],
+    imageUrl: 'https://picsum.photos/id/1/600/400',
+    badges: ['Planning'],
     author: {
-      name: 'Cathy Nguyen',
-      avatar: 'https://randomuser.me/api/portraits/women/48.jpg',
-    },
-    postedAt: '2025-03-20',
+      name: 'Alice Johnson',
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+    }
   },
   {
     post: {
-      title: 'Final Release',
-      content: 'The final version of the application is now live and available to users.',
-      status: "PUBLISHED",
-      likesCount: 57,
       postId: 0,
+      title: 'Kickoff Meeting',
+      content: 'Project kickoff meeting to discuss goals and timelines.',
       authorId: 0,
-      commentsCount: 0
+      createdAt: '2025-01-01',
+      status: "PUBLISHED",
+      likesCount: 12,
+      commentsCount: 0,
+      imageFileName: 'https://picsum.photos/id/100/600/400',
     },
-    image: 'https://picsum.photos/id/1/600/400',
-    badges: ['Launch'],
+    imageUrl: 'https://picsum.photos/id/100/600/400',
+    badges: ['Planning'],
     author: {
-      name: 'David Kim',
-      avatar: 'https://randomuser.me/api/portraits/men/23.jpg',
-    },
-    postedAt: '2025-05-01',
-  },
-];
+      name: 'Alice Johnson',
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+    }
+  }
+]

@@ -6,7 +6,7 @@ export type PostRequestDto = {
   content: string;
   authorId: number;
   status: PostStatus;
-  imageFile?: File; // Corresponds to `MultipartFile imageFile`
+  imageFile?: File;
 };
 
 export type PostResponseDto = {
