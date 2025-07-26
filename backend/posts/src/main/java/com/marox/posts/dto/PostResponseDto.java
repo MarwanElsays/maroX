@@ -25,8 +25,7 @@ public class PostResponseDto {
     @NotEmpty(message = "Content cannot be null or empty")
     private String content;
 
-    @NotNull(message = "Author ID cannot be null")
-    private Long authorId;
+    private UserInteractionDto authorInfo;
 
     private LocalDateTime createdAt;
 

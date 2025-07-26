@@ -1,6 +1,7 @@
 import { usersToFollow } from "@/data/UsersToFollowData";
 import { Avatar, Button, HStack, Stack, Text, Box } from "@chakra-ui/react";
 import styles from "./FollowBar.module.css";
+import { Link } from "react-router-dom";
 
 export default function FollowBar() {
   return (
@@ -16,14 +17,18 @@ export default function FollowBar() {
         {usersToFollow.map((user) => (
           <HStack key={user.email} className={styles.followItem}>
             <HStack className={styles.userInfo}>
-              <Avatar.Root>
-                <Avatar.Fallback name={user.name} />
-                <Avatar.Image src={user.avatar} />
-              </Avatar.Root>
+              <Link to={`/profile/${user.id}`}>
+                <Avatar.Root>
+                  <Avatar.Fallback name={user.name} />
+                  <Avatar.Image src={user.avatar} />
+                </Avatar.Root>
+              </Link>
               <Stack className={styles.textContainer}>
-                <Text textStyle="sm" fontWeight="bold">
-                  {user.name}
-                </Text>
+                <Link to={`/profile/${user.id}`}>
+                  <Text textStyle="sm" fontWeight="bold">
+                    {user.name}
+                  </Text>
+                </Link>
                 <Text textStyle="sm">
                   {user.email}
                 </Text>

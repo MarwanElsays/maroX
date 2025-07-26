@@ -179,6 +179,18 @@ class UserService {
     }
   }
 
+  async isFollowed(userId: number, followedUserId: number): Promise<boolean> {
+    try {
+      const response: AxiosResponse<boolean> = await axios.get(
+        `${API_GATEWAY_BASE_URL}${USER_SERVICE_PREFIX}/isFollowed/${userId}/${followedUserId}`
+      );
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      return false;
+    }
+  }
+
   // Error handling helper
   private handleError(error: unknown): void {
     if (axios.isAxiosError(error)) {

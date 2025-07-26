@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArticleCard } from "@/components/ArticleCard/ArticleCard";
-import { HStack, Image, VStack, Text, SimpleGrid, Tabs, Box, Stack } from "@chakra-ui/react";
+import { HStack, Image, VStack, Text, SimpleGrid, Tabs, Box, Stack, Center, Loader } from "@chakra-ui/react";
 import { LuActivity, LuHeart } from "react-icons/lu";
 import { UserProfileInfo } from "@/types/UserTypes";
 import { userService } from "@/services/UsersService";
@@ -16,6 +16,10 @@ export function UserProfile() {
   const [isLikesLoading, setIsLikesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("Posts");
 
+  const [isFollowed, setIsFollowed] = useState(false);
+  const currentUserId = Number(localStorage.getItem("userId"));
+  const isOwner = currentUserId === Number(userId);
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -27,10 +31,24 @@ export function UserProfile() {
       }
     };
 
+    const checkIsFollowed = async () => {
+      try {
+        const followed = await userService.isFollowed(currentUserId, Number(userId));
+        setIsFollowed(followed);
+        console.log("isFollowed:", followed);
+      } catch (error) {
+        console.error("Failed to check if followed:", error);
+      }
+    };
+
     if (userId) {
       fetchUserProfile();
     }
-  }, [userId]);
+    if (!isOwner) {
+      checkIsFollowed();
+    }
+
+  }, [userId, currentUserId, isOwner]);
 
   useEffect(() => {
     const fetchLikedPosts = async () => {
@@ -50,9 +68,43 @@ export function UserProfile() {
     fetchLikedPosts();
   }, [activeTab, userId]);
 
+  const handleFollow = async () => {
+    try {
+      if (isFollowed) {
+        await userService.unfollowUser(currentUserId, Number(userId));
+        setIsFollowed(false);
+        console.log("Unfollowed successfully");
+      }else{
+        await userService.followUser(currentUserId, Number(userId));
+        setIsFollowed(true);
+        console.log("Followed successfully");
+      }
+      // After following or unfollowing, you might want to refetch the profile
+      // or update followers count
+      try {
+        const profileData = await userService.getUserProfile(Number(userId));
+        setUserProfileInfo(profileData)
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    } catch (err) {
+      console.error("Failed to follow:", err);
+    }
+  };
+
+  const handleEditProfile = () => {
+    console.log("Edit profile clicked");
+  };
 
   if (!userProfileInfo) {
-    return <Text>Loading profile...</Text>;
+    return (
+      <VStack align="center" padding={5} gap={5} width="820px">
+        <Text>Loading profile...</Text>
+        <Center mt="xl">
+          <Loader />
+        </Center>
+      </VStack>
+    );
   }
 
   return (
@@ -98,6 +150,40 @@ export function UserProfile() {
             </VStack>
           </HStack>
         </VStack>
+
+        {!isOwner ? (
+          <button
+            onClick={() => handleFollow()} // Define this function below
+            style={{
+              marginLeft: "100px",
+              backgroundColor: "#011f3aff",
+              color: "white",
+              fontFamily: "monospace",
+              padding: "8px 16px",
+              borderRadius: "6px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            {isFollowed ? "Unfollow" : "Follow"}
+          </button>
+        ) : (
+          <button
+            onClick={() => handleEditProfile()}
+            style={{
+              marginLeft: "100px",
+              backgroundColor: "#011f3aff",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "6px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Edit Profile
+          </button>
+        )}
+
       </HStack>
 
       <Box paddingLeft={10}>
@@ -132,8 +218,7 @@ export function UserProfile() {
                     post={post}
                     imageUrl={post.imageFileName ? postsService.getImageUrl(Number(userId), post.imageFileName) : undefined} // optional
                     badges={[post.status]} // optional
-                    author={{ name: userProfileInfo.firstName + " " + userProfileInfo.lastName
-                      , avatar:  "https://www.gravatar.com/avatar?d=mp" }}
+                    avatar="https://www.gravatar.com/avatar?d=mp" // default avatar
                   />
                 ))
               }
@@ -153,8 +238,7 @@ export function UserProfile() {
                     post={post}
                     imageUrl={post.imageFileName ? postsService.getImageUrl(Number(userId), post.imageFileName) : undefined} // optional
                     badges={[post.status]}
-                    author={{ name: userProfileInfo.firstName + " " + userProfileInfo.lastName
-                      , avatar:  "https://www.gravatar.com/avatar?d=mp" }}
+                    avatar="https://www.gravatar.com/avatar?d=mp" // default avatar
                   />
                 ))
               )}

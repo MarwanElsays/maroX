@@ -15,4 +15,10 @@ public class PostsUsersFallback implements UsersFeignClient {
         System.out.println("Users feign client in posts fallback");
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<List<UserInteractionDto>> getUsersInfo(List<Long> ids) {
+        System.out.println("Users feign client in posts fallback [getUsersInfo] function");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }

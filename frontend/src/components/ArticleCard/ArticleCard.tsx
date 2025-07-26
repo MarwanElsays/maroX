@@ -12,15 +12,13 @@ import {
 } from "@mantine/core";
 import classes from "./ArticleCard.module.css";
 import { ArticleCardProps } from "@/types/ArticleCardProps";
+import { Link } from "react-router-dom";
 
 export function ArticleCard({
   post,
   imageUrl,
   badges = [post.status],
-  author = {
-    name: "Unknown Author",
-    avatar: "https://www.gravatar.com/avatar?d=mp",
-  }
+  avatar = "https://www.gravatar.com/avatar?d=mp"
 }: ArticleCardProps) {
   const theme = useMantineTheme();
 
@@ -49,9 +47,13 @@ export function ArticleCard({
       </Box>
 
       <Group mt="lg">
-        <Avatar src={author.avatar} radius="sm" />
+        <Link to={`/profile/${post.authorInfo.userId}`}>
+          <Avatar src={avatar} radius="sm" />
+        </Link>
         <div>
-          <Text fw={500}>{author.name}</Text>
+          <Link to={`/profile/${post.authorInfo.userId}`}>
+            <Text fw={500}>{post.authorInfo.username}</Text>
+          </Link>
           <Text fz="xs" c="dimmed">
             {post.createdAt
               ? new Date(post.createdAt).toLocaleDateString()
@@ -62,9 +64,14 @@ export function ArticleCard({
 
       <Card.Section className={classes.footer}>
         <Group justify="space-between">
-          <Text fz="xs" c="dimmed">
-            {post.likesCount} people liked this
-          </Text>
+          <Group gap={20}>
+            <Text fz="xs" c="dimmed">
+              {post.likesCount} people liked this
+            </Text>
+            <Text fz="xs" c="dimmed">
+              {post.commentsCount} people commented on this
+            </Text>
+          </Group>
           <Group gap={0}>
             <ActionIcon variant="subtle" color="gray">
               <IconHeart size={20} color={theme.colors.red[6]} stroke={1.5} />

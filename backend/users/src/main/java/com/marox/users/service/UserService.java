@@ -163,6 +163,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public boolean isFollowed(Long userId, Long followedUserId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<User> followedUser = userRepository.findById(followedUserId);
+        return user.isPresent() && followedUser.isPresent() && user.get().getFollowing().contains(followedUser.get());
+    }
+
     private UserResponseDto mapToUserResponseDto(User user) {
         return UserResponseDto.builder()
                 .userId(user.getUserId())

@@ -1,3 +1,4 @@
+import { UserInteractionDto } from './Interactions';
 export type PostStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
 export type PostRequestDto = {
@@ -13,7 +14,7 @@ export type PostResponseDto = {
   postId: number;
   title: string;
   content: string;
-  authorId: number;
+  authorInfo: UserInteractionDto;
   createdAt: string; 
   status: PostStatus;
   likesCount: number;

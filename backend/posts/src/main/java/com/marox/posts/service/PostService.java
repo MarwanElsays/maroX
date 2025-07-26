@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -159,6 +161,15 @@ public class PostService {
         Map<Long, Long> commentCounts = Optional.ofNullable(commentsFeignClient.getCommentsCountForPosts(postIds).getBody())
                 .orElse(Collections.emptyMap());
 
+        // 4. Fetch author info in bulk (single call)
+        List<UserInteractionDto> userList = Optional.ofNullable(usersFeignClient.getUsersInfo(List.copyOf(postIds)).getBody())
+                .orElse(Collections.emptyList());
+        Map<Long, UserInteractionDto> authorInfoMap = userList.stream()
+                .collect(Collectors.toMap(
+                        UserInteractionDto::getUserId,
+                        Function.identity()
+                ));
+
         // 3. Map results to PostDto with functional style
         return results.stream()
                 .map(result -> {
@@ -176,7 +187,7 @@ public class PostService {
                             .postId(postId)
                             .title(title)
                             .content(content)
-                            .authorId(authorId)
+                            .authorInfo(authorInfoMap.get(authorId))
                             .createdAt(dateTime)
                             .status(status)
                             .likesCount(likeCount)
@@ -189,11 +200,14 @@ public class PostService {
 
     // Helper method to convert Post entity to PostDto
     private PostResponseDto mapToPostDto(Post post, long postLikesCount, long commentsCount) {
+        UserInteractionDto userInfo = Objects.requireNonNull(usersFeignClient.getUsersInfo(List.of(post.getAuthorId()))
+                .getBody()).get(0);
+
         return PostResponseDto.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .authorId(post.getAuthorId())
+                .authorInfo(userInfo)
                 .createdAt(post.getCreatedAt())
                 .status(post.getStatus())
                 .likesCount(postLikesCount)

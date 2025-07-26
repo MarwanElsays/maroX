@@ -111,6 +111,18 @@ public class UserController {
         return new ResponseEntity<>(usersLikesInfo, HttpStatus.OK);
     }
 
+    @PostMapping("/usersInfo")
+    public ResponseEntity<List<UserInteractionDto>> getUsersInfo(@RequestBody List<Long> ids) {
+        List<UserInteractionDto> usersInfo = userService.getUsersInteractedWithPost(ids);
+        return new ResponseEntity<>(usersInfo, HttpStatus.OK);
+    }
+
+    @GetMapping("/isFollowed/{userId}/{followedUserId}")
+    public ResponseEntity<Boolean> isFollowed(@PathVariable Long userId, @PathVariable Long followedUserId) {
+        boolean isFollowed = userService.isFollowed(userId, followedUserId);
+        return new ResponseEntity<>(isFollowed, HttpStatus.OK);
+    }
+
     @Retry(name= "getContactInfo", fallbackMethod = "getContactInfoFallback")
     @GetMapping("/getContactInfo")
     public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
