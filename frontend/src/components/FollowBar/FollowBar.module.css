@@ -1,0 +1,35 @@
+.container {
+  position: fixed;
+  right: 1rem;
+  top: 5rem;
+  width: 380px;
+  max-width: 380px;
+  background-color: rgb(17, 17, 22);
+}
+
+.followItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.userInfo {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.textContainer {
+  flex: 1;
+  gap: 0px;
+  min-width: 0;
+  color:rgb(255, 255, 255);
+}
+
+.followButton {
+  min-width: fit-content;
+  color:rgb(0,0,0) ;
+  background-color: rgb(255,255,255);
+}
