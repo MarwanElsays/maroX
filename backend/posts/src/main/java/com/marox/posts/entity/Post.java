@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @Table(name = "posts")
 public class Post {
 
@@ -38,7 +39,7 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private PostStatus status;
 
-    @OneToMany(mappedBy = "id.post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<Like> likes;
 
     private String imageFileName; // Only store filename

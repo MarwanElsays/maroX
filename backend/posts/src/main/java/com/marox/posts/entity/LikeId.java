@@ -10,13 +10,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class LikeId implements Serializable {
-
-    @Column(nullable = false, updatable = false)
     private Long userId;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    private Long postId;
 }
 

@@ -12,6 +12,7 @@ import com.marox.posts.repository.PostRepository;
 import com.marox.posts.service.client.comments.CommentsFeignClient;
 import com.marox.posts.service.client.users.UsersFeignClient;
 import com.marox.posts.utilities.FileStorageUtil;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,25 +110,31 @@ public class PostService {
         // Create the composite key for the Like
         LikeId likeId = LikeId.builder()
                 .userId(userId)
-                .post(post)
+                .postId(postId)
                 .build();
 
-        Like like = new Like();
-        // Set the composite key
-        like.setId(likeId);
+        Like like = Like.builder()
+                .id(likeId)
+                .post(post)
+                .build();
         // Save the like entity
         likeRepository.save(like);
     }
 
+    @Transactional
     public void unlikePost(Long userId, Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
-        // Create the composite key for the Like
+        // Create the composite key
         LikeId likeId = LikeId.builder()
                 .userId(userId)
-                .post(post)
+                .postId(postId)
                 .build();
-        likeRepository.deleteById(likeId);
+
+        // Check existence and delete directly
+        if (likeRepository.existsById(likeId)) {
+            likeRepository.deleteById(likeId);
+        } else {
+            throw new RuntimeException("Like entry not found for deletion");
+        }
     }
 
     public List<UserInteractionDto> getPostLikesWithUsersInfo(Long postId) {
@@ -149,6 +156,10 @@ public class PostService {
                     return mapToPostDto(post, postLikesCount, commentsCount);
                 })
                 .toList();
+    }
+
+    public boolean isPostLiked(Long userId, Long postId) {
+        return likeRepository.existsByUserIdAndPostId(userId, postId);
     }
 
     public List<PostResponseDto> mapResultsToPostDtos(List<Object[]> results) {

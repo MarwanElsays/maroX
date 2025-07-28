@@ -16,7 +16,12 @@ import java.time.LocalDateTime;
 public class Like {
 
     @EmbeddedId
-    private LikeId id;  // Composite primary key
+    private LikeId id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("postId")
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
