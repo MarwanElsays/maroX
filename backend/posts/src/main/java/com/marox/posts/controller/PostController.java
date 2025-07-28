@@ -78,12 +78,14 @@ public class PostController {
     @PostMapping("/likePost")
     public ResponseEntity<Void> likePost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId) {
         postService.likePost(userId, postId);
+        logger.info("Post with ID {} has been liked by user with ID {}", postId, userId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/unlikePost")
     public ResponseEntity<Void> unlikePost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId) {
         postService.unlikePost(userId, postId);
+        logger.info("Post with ID {} has been unliked by user with ID {}", postId, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -110,6 +112,12 @@ public class PostController {
     public ResponseEntity<List<PostResponseDto>> getUserLikedPosts(@PathVariable Long userId) {
         List<PostResponseDto> posts = postService.getUserLikedPosts(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    @GetMapping("/isPostLiked")
+    public ResponseEntity<Boolean> isPostLiked(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId) {
+        boolean isLiked = postService.isPostLiked(userId, postId);
+        return new ResponseEntity<>(isLiked, HttpStatus.OK);
     }
 
     @GetMapping("/getContactInfo")

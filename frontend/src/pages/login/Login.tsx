@@ -26,6 +26,7 @@ export default function LoginForm() {
     { setSubmitting }: FormikHelpers<FormValues>
   ) => {
     console.log('Logging in with:', values);
+    localStorage.setItem('userId', '1'); // Simulate login by setting userId
     navigate('/timeline');
     setSubmitting(false);
   };

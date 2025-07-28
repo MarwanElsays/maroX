@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Container, Stack, Text, Loader, Center } from '@mantine/core';
 import { Spacer } from '@chakra-ui/react';
-import { ArticleCard } from '../components/ArticleCard/ArticleCard';
+import ArticleCard from '../components/ArticleCard/ArticleCard';
 import CreatePost from '@/components/CreatePost/CreatePost';
 import { PostResponseDto } from '@/types/PostInfo';
 import { postsService } from '@/services/PostsService';

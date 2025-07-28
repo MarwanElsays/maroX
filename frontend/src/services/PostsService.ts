@@ -167,6 +167,18 @@ class PostsService {
     }
   }
 
+  async isPostLiked(userId: number, postId: number): Promise<boolean> {
+  try {
+    const response: AxiosResponse<boolean> = await axios.get(
+      `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/isPostLiked?userId=${userId}&postId=${postId}`
+    );
+    return response.data;
+  } catch (error) {
+    this.handleError(error);
+    throw error;
+  }
+}
+
   // Error handling helper
   private handleError(error: unknown): void {
     if (axios.isAxiosError(error)) {

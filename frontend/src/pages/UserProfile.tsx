@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArticleCard } from "@/components/ArticleCard/ArticleCard";
+import ArticleCard from "@/components/ArticleCard/ArticleCard";
 import { HStack, Image, VStack, Text, SimpleGrid, Tabs, Box, Stack, Center, Loader } from "@chakra-ui/react";
 import { LuActivity, LuHeart } from "react-icons/lu";
 import { UserProfileInfo } from "@/types/UserTypes";
@@ -236,7 +236,7 @@ export function UserProfile() {
                   <ArticleCard
                     key={index}
                     post={post}
-                    imageUrl={post.imageFileName ? postsService.getImageUrl(Number(userId), post.imageFileName) : undefined} // optional
+                    imageUrl={post.imageFileName ? postsService.getImageUrl(Number(post.authorInfo.userId), post.imageFileName) : undefined} // optional
                     badges={[post.status]}
                     avatar="https://www.gravatar.com/avatar?d=mp" // default avatar
                   />

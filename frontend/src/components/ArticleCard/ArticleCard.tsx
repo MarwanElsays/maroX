@@ -13,14 +13,58 @@ import {
 import classes from "./ArticleCard.module.css";
 import { ArticleCardProps } from "@/types/ArticleCardProps";
 import { Link } from "react-router-dom";
+import { postsService } from "@/services/PostsService";
+import { useEffect, useState } from "react";
 
-export function ArticleCard({
+export default function ArticleCard({
   post,
   imageUrl,
   badges = [post.status],
   avatar = "https://www.gravatar.com/avatar?d=mp"
 }: ArticleCardProps) {
   const theme = useMantineTheme();
+  const currentUserId = Number(localStorage.getItem("userId"));
+
+  const [likesCount, setLikesCount] = useState<number>(post.likesCount);
+  const [liked, setLiked] = useState<boolean>(false); 
+
+  // Fetch initial like status
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      try {
+        const isLiked = await postsService.isPostLiked(currentUserId, post.postId);
+        console.log("Post like status:", isLiked);
+        setLiked(isLiked);
+      } catch (error) {
+        console.error("Failed to fetch like status", error);
+      }
+    };
+
+    if (currentUserId && post?.postId) {
+      fetchLikeStatus();
+    }
+  }, [currentUserId, post?.postId]);
+
+  const handleLike = async () => {
+    try {
+      if (liked) {
+        await postsService.unlikePost(currentUserId, post.postId);
+        console.log("Post unliked successfully");
+        // Optionally refetch like count or just increment
+        setLiked(false);
+        setLikesCount((prev: number) => prev - 1);
+      }else{
+        // Call your like API here
+        await postsService.likePost(currentUserId, post.postId);
+        console.log("Post liked successfully");
+        // Optionally refetch like count or just increment
+        setLiked(true);
+        setLikesCount((prev: number) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Failed to like post", error);
+    }
+  };
 
   return (
     <Card withBorder padding="lg" radius="md" className={classes.card}>
@@ -66,15 +110,15 @@ export function ArticleCard({
         <Group justify="space-between">
           <Group gap={20}>
             <Text fz="xs" c="dimmed">
-              {post.likesCount} people liked this
+              {likesCount} people liked this
             </Text>
             <Text fz="xs" c="dimmed">
               {post.commentsCount} people commented on this
             </Text>
           </Group>
           <Group gap={0}>
-            <ActionIcon variant="subtle" color="gray">
-              <IconHeart size={20} color={theme.colors.red[6]} stroke={1.5} />
+            <ActionIcon variant="subtle" onClick={handleLike}>
+              <IconHeart size={20} fill={liked ? theme.colors.red[6] : "none"} color={theme.colors.red[6]} stroke={1.5} />
             </ActionIcon>
             <ActionIcon variant="subtle" color="gray">
               <IconBookmark
