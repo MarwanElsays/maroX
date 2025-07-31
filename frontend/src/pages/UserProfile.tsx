@@ -4,9 +4,9 @@ import ArticleCard from "@/components/ArticleCard/ArticleCard";
 import { HStack, Image, VStack, Text, SimpleGrid, Tabs, Box, Stack, Center, Loader } from "@chakra-ui/react";
 import { LuActivity, LuHeart } from "react-icons/lu";
 import { UserProfileInfo } from "@/types/UserTypes";
-import { userService } from "@/services/UsersService";
 import { PostResponseDto } from "@/types/PostInfo";
-import { postsService } from "@/services/PostsService";
+import { useUsersService } from "@/services/UsersService";
+import { usePostsService } from "@/services/PostsService";
 
 export function UserProfile() {
   const { userId } = useParams(); 
@@ -16,14 +16,17 @@ export function UserProfile() {
   const [isLikesLoading, setIsLikesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("Posts");
 
-  const [isFollowed, setIsFollowed] = useState(false);
+  const [isFollowedBool, setIsFollowedBool] = useState(false);
   const currentUserId = Number(localStorage.getItem("userId"));
   const isOwner = currentUserId === Number(userId);
+
+  const {getUserProfile, isFollowed, unfollowUser, followUser} = useUsersService();
+  const {getUserLikedPosts, getImageUrl} = usePostsService();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const profileData = await userService.getUserProfile(Number(userId));
+        const profileData = await getUserProfile(Number(userId));
         console.log("posts length:", profileData.posts.length);
         setUserProfileInfo(profileData)
       } catch (error) {
@@ -33,8 +36,8 @@ export function UserProfile() {
 
     const checkIsFollowed = async () => {
       try {
-        const followed = await userService.isFollowed(currentUserId, Number(userId));
-        setIsFollowed(followed);
+        const followed = await isFollowed(currentUserId, Number(userId));
+        setIsFollowedBool(followed);
         console.log("isFollowed:", followed);
       } catch (error) {
         console.error("Failed to check if followed:", error);
@@ -48,14 +51,14 @@ export function UserProfile() {
       checkIsFollowed();
     }
 
-  }, [userId, currentUserId, isOwner]);
+  }, [userId, currentUserId, isOwner, getUserProfile, isFollowed]);
 
   useEffect(() => {
     const fetchLikedPosts = async () => {
       if (activeTab === "Likes" && userId) {
         try {
           setIsLikesLoading(true);
-          const likedPosts = await postsService.getUserLikedPosts(Number(userId));
+          const likedPosts = await getUserLikedPosts(Number(userId));
           setLikedPosts(likedPosts);
         } catch (error) {
           console.error("Failed to fetch liked posts:", error);
@@ -66,23 +69,23 @@ export function UserProfile() {
     };
 
     fetchLikedPosts();
-  }, [activeTab, userId]);
+  }, [activeTab, getUserLikedPosts, userId]);
 
   const handleFollow = async () => {
     try {
-      if (isFollowed) {
-        await userService.unfollowUser(currentUserId, Number(userId));
-        setIsFollowed(false);
+      if (isFollowedBool) {
+        await unfollowUser(currentUserId, Number(userId));
+        setIsFollowedBool(false);
         console.log("Unfollowed successfully");
       }else{
-        await userService.followUser(currentUserId, Number(userId));
-        setIsFollowed(true);
+        await followUser(currentUserId, Number(userId));
+        setIsFollowedBool(true);
         console.log("Followed successfully");
       }
       // After following or unfollowing, you might want to refetch the profile
       // or update followers count
       try {
-        const profileData = await userService.getUserProfile(Number(userId));
+        const profileData = await getUserProfile(Number(userId));
         setUserProfileInfo(profileData)
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
@@ -165,7 +168,7 @@ export function UserProfile() {
               cursor: "pointer",
             }}
           >
-            {isFollowed ? "Unfollow" : "Follow"}
+            {isFollowedBool ? "Unfollow" : "Follow"}
           </button>
         ) : (
           <button
@@ -216,7 +219,7 @@ export function UserProfile() {
                   <ArticleCard
                     key={index}
                     post={post}
-                    imageUrl={post.imageFileName ? postsService.getImageUrl(Number(userId), post.imageFileName) : undefined} // optional
+                    imageUrl={post.imageFileName ? getImageUrl(Number(userId), post.imageFileName) : undefined} // optional
                     badges={[post.status]} // optional
                     avatar="https://www.gravatar.com/avatar?d=mp" // default avatar
                   />
@@ -236,7 +239,7 @@ export function UserProfile() {
                   <ArticleCard
                     key={index}
                     post={post}
-                    imageUrl={post.imageFileName ? postsService.getImageUrl(Number(post.authorInfo.userId), post.imageFileName) : undefined} // optional
+                    imageUrl={post.imageFileName ? getImageUrl(Number(post.authorInfo.userId), post.imageFileName) : undefined} // optional
                     badges={[post.status]}
                     avatar="https://www.gravatar.com/avatar?d=mp" // default avatar
                   />

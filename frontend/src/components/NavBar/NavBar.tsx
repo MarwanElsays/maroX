@@ -8,12 +8,15 @@ import {
   IconReceipt2,
   IconSettings,
   IconSwitchHorizontal,
+  IconUserCog,
 } from "@tabler/icons-react";
 import { Code, Group } from "@mantine/core";
 import classes from "./NavBar.module.css";
+import { useKeycloak } from "@/keycloak/keycloakContext";
 
 export function NavBar() {
   const [userId, setUserId] = useState<string | null>(null);
+  const keycloak  = useKeycloak();
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId") ?? "0";
@@ -25,7 +28,7 @@ export function NavBar() {
     { link: "/timeline", label: "Timeline", icon: IconTimeline },
     { link: "/notifications", label: "Notifications", icon: IconBellRinging },
     { link: "/bookmarks", label: "Bookmarks", icon: IconReceipt2 },
-    { link: "/settings", label: "Other Settings", icon: IconSettings },
+    { link: "/settings", label: "Settings", icon: IconSettings },
   ];
 
   const links = data.map((item) => (
@@ -41,6 +44,22 @@ export function NavBar() {
     </NavLink>
   ));
 
+  const handleLogout = async () => {
+    try {
+      await keycloak.logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const handleManageAccount = async () => {
+    try {
+      await keycloak.accountManagement();
+    } catch (error) {
+      console.error("Failed to open manage account:", error);
+    }
+  };
+
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
@@ -53,15 +72,20 @@ export function NavBar() {
       </div>
 
       <div className={classes.footer}>
+        <button onClick={handleManageAccount} className={classes.anyButton}>
+          <IconUserCog className={classes.linkIcon} stroke={1.5} />
+          <span>Manage account</span>
+        </button>
+
         <NavLink to="/change-account" className={classes.link}>
           <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
           <span>Change account</span>
         </NavLink>
 
-        <NavLink to="/logout" className={classes.link}>
+        <button onClick={handleLogout} className={classes.anyButton}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
-        </NavLink>
+        </button>
       </div>
     </nav>
   );

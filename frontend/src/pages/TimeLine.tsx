@@ -4,16 +4,17 @@ import { Spacer } from '@chakra-ui/react';
 import ArticleCard from '../components/ArticleCard/ArticleCard';
 import CreatePost from '@/components/CreatePost/CreatePost';
 import { PostResponseDto } from '@/types/PostInfo';
-import { postsService } from '@/services/PostsService';
+import { usePostsService } from '@/services/PostsService';
 
 export default function TimelinePage() {
   const [posts, setPosts] = useState<PostResponseDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { getAllPosts, getImageUrl } = usePostsService(); 
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const data = await postsService.getAllPosts();
+        const data = await getAllPosts();
         console.log('posts number:', data);
         setPosts(data);
       } catch (err) {
@@ -24,7 +25,7 @@ export default function TimelinePage() {
     };
 
     fetchPosts();
-  }, []);
+  }, [getAllPosts]);
 
   return (
     <Container size="sm" py="xl">
@@ -44,7 +45,7 @@ export default function TimelinePage() {
             <ArticleCard 
             key={index}
             post={post} 
-            imageUrl={post.imageFileName ? postsService.getImageUrl(post.authorInfo.userId, post.imageFileName) : undefined} // optional
+            imageUrl={post.imageFileName ? getImageUrl(post.authorInfo.userId, post.imageFileName) : undefined} // optional
             badges={[post.status]}
             avatar='https://www.gravatar.com/avatar?d=mp' // default avatar
             />

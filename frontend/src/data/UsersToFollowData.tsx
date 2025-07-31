@@ -14,13 +14,13 @@ export const usersToFollow = [
   {
     id: "3",
     name: "Marwan Mostafa",
-    email: "melissa.jones@example.com",
+    email: "maro.mostafa@example.com",
     avatar: "https://i.pravatar.cc/300?u=uh",
   },
     {
     id: "4",
     name: "Marioma hesham",
-    email: "melissa.jones@example.com",
+    email: "marioma.hashoma@example.com",
     avatar: "https://i.pravatar.cc/300?u=mq",
   },
 ]

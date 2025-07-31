@@ -7,8 +7,8 @@ import { NavBar } from './components/NavBar/NavBar';
 import { Post } from './pages/Post';
 import FollowBar from './components/FollowBar/FollowBar';
 import { UserProfile } from './pages/UserProfile';
-import LoginForm from './pages/login/Login';
-import SignupForm from './pages/signup/Signup';
+// import LoginForm from './pages/login/Login';
+// import SignupForm from './pages/signup/Signup';
 import { FollowersPage } from './pages/FollowersPage';
 import { FollowingPage } from './pages/FollowingPage';
 
@@ -31,8 +31,8 @@ function AppContent() {
       {!isAuthPage && <NavBar />}
       <Routes>
         <Route path="/" element={<Timeline />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/signup" element={<SignupForm />} />
+        {/* <Route path="/login" element={<LoginForm />} />
+        <Route path="/signup" element={<SignupForm />} /> */}
         <Route path="/post" element={<Post />} />
         <Route path="/timeline" element={<Timeline />} />
         <Route path="/profile/:userId" element={<UserProfile />} />

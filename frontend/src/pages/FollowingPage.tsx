@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Text, VStack, Spinner } from "@chakra-ui/react";
-import { userService } from "@/services/UsersService";
 import { UserInteractionDto } from "@/types/Interactions";
 import UsersList from "@/components/UsersList";
+import { useUsersService } from "@/services/UsersService";
 
 export function FollowingPage() {
   const { userName, userId } = useParams();
   const [following, setFollowing] = useState<UserInteractionDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const {getFollowing} = useUsersService();
 
   useEffect(() => {
     const fetchFollowing = async () => {
       try {
-        const response = await userService.getFollowing(Number(userId));
+        const response = await getFollowing(Number(userId));
         setFollowing(response);
       } catch (error) {
         console.error("Failed to fetch following:", error);
@@ -25,7 +26,7 @@ export function FollowingPage() {
     if (userId) {
       fetchFollowing();
     }
-  }, [userId]);
+  }, [getFollowing, userId]);
 
   if (loading) return <Spinner size="lg" color="blue.500" />;
 

@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { Box, Textarea, Input, Button, IconButton, Flex } from "@chakra-ui/react";
 import { FiImage, FiX } from "react-icons/fi";
 import Cropper from "react-easy-crop";
-import { postsService } from "@/services/PostsService";
+import { usePostsService } from "@/services/PostsService";
 import { PostRequestDto } from "@/types/PostInfo";
 import { toaster } from "../ui/toaster";
 
@@ -17,6 +17,8 @@ export default function CreatePost() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const {createPost} = usePostsService();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,7 +70,7 @@ export default function CreatePost() {
         imageFile,
       };
 
-      await postsService.createPost(postData);
+      await createPost(postData);
       
       toaster.success({
         title: "Post created successfully",

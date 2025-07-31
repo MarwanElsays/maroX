@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import classes from './Signup.module.css';
 import { UserRequestDto } from '@/types/UserTypes';
-import { userService } from '@/services/UsersService';
+import { useUsersService } from '@/services/UsersService';
 
 interface SignupValues {
   username: string;
@@ -43,6 +43,7 @@ const initialValues: SignupValues = {
 
 export default function SignupForm() {
   const navigate = useNavigate();
+  const {createUser} = useUsersService();
   const handleSubmit = async (
     values: SignupValues,
     { setSubmitting, setStatus }: FormikHelpers<SignupValues>
@@ -60,7 +61,7 @@ export default function SignupForm() {
       };
 
       // Call the user service to create the user
-      const userId = await userService.createUser(userData);
+      const userId = await createUser(userData);
       
       console.log('User created with ID:', userId);
       localStorage.setItem('userId', userId.toString());

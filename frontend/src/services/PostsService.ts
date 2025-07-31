@@ -1,13 +1,16 @@
 import { UserInteractionDto } from '@/types/Interactions';
 import { PostRequestDto, PostResponseDto } from '@/types/PostInfo';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { useAxiosWithAuth } from '@/hooks/useAxiosWithAuth';
 
 const API_GATEWAY_BASE_URL = 'http://localhost:8072'; // API Gateway URL
 const POST_SERVICE_PREFIX = '/marox/posts/api'; // Route prefix in gateway
 
-class PostsService {
+export const usePostsService = () => {
 
-  private convertToFormData(postData: PostRequestDto): FormData {
+  const axiosWithAuth = useAxiosWithAuth();
+
+  const convertToFormData = (postData: PostRequestDto):FormData => {
     const formData = new FormData();
     formData.append("postId", postData.postId.toString());
     formData.append("title", postData.title);
@@ -21,11 +24,11 @@ class PostsService {
   }
   
   // Create a new post
-  async createPost(postData: PostRequestDto): Promise<number> {
+  const createPost = async(postData: PostRequestDto): Promise<number> => {
     try {
-      const formData = this.convertToFormData(postData);
+      const formData = convertToFormData(postData);
       // Send the form data to the backend
-      const response: AxiosResponse<number> = await axios.post(
+      const response: AxiosResponse<number> = await axiosWithAuth.post(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/createPost`,
         formData,
         {
@@ -37,56 +40,56 @@ class PostsService {
 
       return response.data;
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Get all posts
-  async getAllPosts(): Promise<PostResponseDto[]> {
+  const getAllPosts = async (): Promise<PostResponseDto[]> => {
     try {
-      const response: AxiosResponse<PostResponseDto[]> = await axios.get(
+      const response: AxiosResponse<PostResponseDto[]> = await axiosWithAuth.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getAllPosts`
       );
       return response.data;
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Get post by ID
-  async getPostById(postId: number): Promise<PostResponseDto> {
+  const getPostById = async (postId: number): Promise<PostResponseDto> => {
     try {
-      const response: AxiosResponse<PostResponseDto> = await axios.get(
+      const response: AxiosResponse<PostResponseDto> = await axiosWithAuth.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getPostById/${postId}`
       );
       return response.data;
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Get posts by user ID (with retry logic)
-  async getPostsByUserId(userId: number): Promise<PostResponseDto[]> {
+  const getPostsByUserId = async (userId: number): Promise<PostResponseDto[]> => {
     try {
-      const response: AxiosResponse<PostResponseDto[]> = await axios.get(
+      const response: AxiosResponse<PostResponseDto[]> = await axiosWithAuth.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getPostsByUserId/${userId}`
       );
       return response.data;
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Update a post
-  async updatePost(postData: PostRequestDto): Promise<void> {
+  const updatePost = async (postData: PostRequestDto): Promise<void> => {
     try {
-      const formData = this.convertToFormData(postData);
+      const formData = convertToFormData(postData);
       // Send the form data to the backend
-      await axios.put(
+      await axiosWithAuth.put(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/updatePost/${postData.postId}`,
         formData,
         {
@@ -96,91 +99,91 @@ class PostsService {
         }
       );
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Delete a post
-  async deletePost(postId: number): Promise<void> {
+  const deletePost = async (postId: number): Promise<void> => {
     try {
-      await axios.delete(
+      await axiosWithAuth.delete(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/deletePost/${postId}`
       );
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Like a post
-  async likePost(userId: number, postId: number): Promise<void> {
+  const likePost = async (userId: number, postId: number): Promise<void> => {
     try {
-      await axios.post(
+      await axiosWithAuth.post(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/likePost?userId=${userId}&postId=${postId}`
       );
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Unlike a post
-  async unlikePost(userId: number, postId: number): Promise<void> {
+  const unlikePost = async (userId: number, postId: number): Promise<void> => {
     try {
-      await axios.delete(
+      await axiosWithAuth.delete(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/unlikePost?userId=${userId}&postId=${postId}`
       );
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
   // Get post likes with user info
-  async getPostLikesWithUsersInfo(postId: number): Promise<UserInteractionDto[]> {
+  const getPostLikesWithUsersInfo = async (postId: number): Promise<UserInteractionDto[]> => {
     try {
-      const response: AxiosResponse<UserInteractionDto[]> = await axios.get(
+      const response: AxiosResponse<UserInteractionDto[]> = await axiosWithAuth.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getPostLikesWithUsersInfo/${postId}`
       );
       return response.data;
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
-  getImageUrl(authorId: number, fileName: string): string {
+  const getImageUrl = (authorId: number, fileName: string): string => {
     return `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getImage/${authorId}/${encodeURIComponent(fileName)}`;
   }
 
   // Get post likes with user info
-  async getUserLikedPosts(userId: number): Promise<PostResponseDto[]> {
+  const getUserLikedPosts = async (userId: number): Promise<PostResponseDto[]> => {
     try {
-      const response: AxiosResponse<PostResponseDto[]> = await axios.get(
+      const response: AxiosResponse<PostResponseDto[]> = await axiosWithAuth.get(
         `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/getUserLikedPosts/${userId}`
       );
       return response.data;
     } catch (error) {
-      this.handleError(error);
+      handleError(error);
       throw error;
     }
   }
 
-  async isPostLiked(userId: number, postId: number): Promise<boolean> {
-  try {
-    const response: AxiosResponse<boolean> = await axios.get(
-      `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/isPostLiked?userId=${userId}&postId=${postId}`
-    );
-    return response.data;
-  } catch (error) {
-    this.handleError(error);
-    throw error;
+  const isPostLiked = async (userId: number, postId: number): Promise<boolean> => {
+    try {
+      const response: AxiosResponse<boolean> = await axiosWithAuth.get(
+        `${API_GATEWAY_BASE_URL}${POST_SERVICE_PREFIX}/isPostLiked?userId=${userId}&postId=${postId}`
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
   }
-}
 
   // Error handling helper
-  private handleError(error: unknown): void {
+  const handleError = (error: unknown): void => {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
@@ -198,7 +201,19 @@ class PostsService {
       console.error('Unexpected error:', error);
     }
   }
-}
 
-// Export a singleton instance of the service
-export const postsService = new PostsService();
+  return {
+    createPost,
+    getAllPosts,
+    getPostById,
+    getPostsByUserId,
+    updatePost,
+    deletePost,
+    likePost,
+    unlikePost,
+    getPostLikesWithUsersInfo,
+    getImageUrl,
+    getUserLikedPosts,
+    isPostLiked,
+  };
+}

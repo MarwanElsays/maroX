@@ -13,8 +13,8 @@ import {
 import classes from "./ArticleCard.module.css";
 import { ArticleCardProps } from "@/types/ArticleCardProps";
 import { Link } from "react-router-dom";
-import { postsService } from "@/services/PostsService";
 import { useEffect, useState } from "react";
+import { usePostsService } from "@/services/PostsService";
 
 export default function ArticleCard({
   post,
@@ -28,11 +28,13 @@ export default function ArticleCard({
   const [likesCount, setLikesCount] = useState<number>(post.likesCount);
   const [liked, setLiked] = useState<boolean>(false); 
 
+  const {isPostLiked, unlikePost, likePost} = usePostsService();
+
   // Fetch initial like status
   useEffect(() => {
     const fetchLikeStatus = async () => {
       try {
-        const isLiked = await postsService.isPostLiked(currentUserId, post.postId);
+        const isLiked = await isPostLiked(currentUserId, post.postId);
         console.log("Post like status:", isLiked);
         setLiked(isLiked);
       } catch (error) {
@@ -43,19 +45,19 @@ export default function ArticleCard({
     if (currentUserId && post?.postId) {
       fetchLikeStatus();
     }
-  }, [currentUserId, post?.postId]);
+  }, [currentUserId, isPostLiked, post.postId]);
 
   const handleLike = async () => {
     try {
       if (liked) {
-        await postsService.unlikePost(currentUserId, post.postId);
+        await unlikePost(currentUserId, post.postId);
         console.log("Post unliked successfully");
         // Optionally refetch like count or just increment
         setLiked(false);
         setLikesCount((prev: number) => prev - 1);
       }else{
         // Call your like API here
-        await postsService.likePost(currentUserId, post.postId);
+        await likePost(currentUserId, post.postId);
         console.log("Post liked successfully");
         // Optionally refetch like count or just increment
         setLiked(true);
