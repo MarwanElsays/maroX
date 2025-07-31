@@ -26,7 +26,7 @@ export function FollowersPage() {
     if (userId) {
       fetchFollowers();
     }
-  }, [getFollowers, userId]);
+  }, [userId]);
 
   if (loading) return <Spinner size="lg" color="blue.500" />;
 

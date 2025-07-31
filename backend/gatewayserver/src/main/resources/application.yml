@@ -17,6 +17,11 @@ spring:
       httpclient:
         connect-timeout: 1000
         response-timeout: 16000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:9090/realms/MaroX/protocol/openid-connect/certs"
   data:
     redis:
       connect-timeout: 2s

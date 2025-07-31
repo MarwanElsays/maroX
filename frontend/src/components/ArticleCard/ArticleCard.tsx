@@ -45,7 +45,7 @@ export default function ArticleCard({
     if (currentUserId && post?.postId) {
       fetchLikeStatus();
     }
-  }, [currentUserId, isPostLiked, post.postId]);
+  }, [currentUserId, post.postId]);
 
   const handleLike = async () => {
     try {

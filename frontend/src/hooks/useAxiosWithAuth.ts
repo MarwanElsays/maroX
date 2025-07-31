@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 import { useEffect, useRef } from 'react';
 
 export const useAxiosWithAuth = (): AxiosInstance => {
-  const keycloak = useKeycloak();
+  const {keycloak} = useKeycloak();
   const axiosInstance = useRef(axios.create());
 
   useEffect(() => {

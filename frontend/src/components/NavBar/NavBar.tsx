@@ -16,7 +16,7 @@ import { useKeycloak } from "@/keycloak/keycloakContext";
 
 export function NavBar() {
   const [userId, setUserId] = useState<string | null>(null);
-  const keycloak  = useKeycloak();
+  const {keycloak}  = useKeycloak();
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId") ?? "0";

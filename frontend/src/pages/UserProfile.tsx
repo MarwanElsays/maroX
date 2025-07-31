@@ -51,7 +51,7 @@ export function UserProfile() {
       checkIsFollowed();
     }
 
-  }, [userId, currentUserId, isOwner, getUserProfile, isFollowed]);
+  }, [userId, currentUserId, isOwner]);
 
   useEffect(() => {
     const fetchLikedPosts = async () => {
@@ -69,7 +69,7 @@ export function UserProfile() {
     };
 
     fetchLikedPosts();
-  }, [activeTab, getUserLikedPosts, userId]);
+  }, [activeTab, userId]);
 
   const handleFollow = async () => {
     try {

@@ -1,6 +1,6 @@
 import './App.css';
 import '@mantine/core/styles.css';
-import { MantineProvider, Container } from '@mantine/core';
+import { MantineProvider, Container, Center, Loader } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Timeline from './pages/TimeLine';
 import { NavBar } from './components/NavBar/NavBar';
@@ -11,8 +11,24 @@ import { UserProfile } from './pages/UserProfile';
 // import SignupForm from './pages/signup/Signup';
 import { FollowersPage } from './pages/FollowersPage';
 import { FollowingPage } from './pages/FollowingPage';
+import { useKeycloak } from './keycloak/keycloakContext';
 
 export default function App() {
+  const {isInitialized} = useKeycloak();
+
+  if (!isInitialized) {
+    return (
+      <MantineProvider>
+        <Center h="100vh" bg="black">
+          <div style={{ textAlign: 'center', color: 'teal' }}>
+            <Loader color="teal" size="lg" />
+            <h1 style={{ marginTop: '1rem' }}>Marox</h1>
+          </div>
+        </Center>
+      </MantineProvider>
+    );
+  }
+
   return (
     <MantineProvider>
       <Router>

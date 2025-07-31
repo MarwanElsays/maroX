@@ -24,8 +24,9 @@ export default function TimelinePage() {
       }
     };
 
-    fetchPosts();
-  }, [getAllPosts]);
+   // fetchPosts();
+    
+  }, []);
 
   return (
     <Container size="sm" py="xl">
